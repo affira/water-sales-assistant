@@ -1,0 +1,43 @@
+**Field Service Report**  
+**Report Reference:** FSR-0043
+
+---
+
+**Customer:** Rheinwerk Chemie GmbH  
+**Site Location:** Ludwigshafen, Germany  
+**Visit Date:** 2024-10-03  
+**Technician:** Chloe Bennett  
+
+### Equipment Serviced
+- ClarionRO RO-500 reverse osmosis skid
+
+### Scope
+- Membrane Replacement — 24 membrane elements
+
+### Time
+
+| Item | Hours |
+|------|-------|
+| On-site work | 8.6 |
+| Travel (round trip) | 2.5 |
+
+### Materials and Parts Used
+
+| Item | Qty | Notes |
+|------|-----|-------|
+| PureMem LE-440 low-energy RO element (8040) | 24 |  |
+| Interconnector & O-ring kit (per vessel) | 4 |  |
+| PPE & consumables (gloves, wipes, lubricant) | 1 |  |
+
+### Findings
+- Autopsy of one lead element showed colloidal fouling consistent with poor pretreatment.
+- Equipment returned to service and test run completed.
+
+### Cost Summary
+
+| Description | Qty | Rate (EUR) | Total (EUR) |
+|-------------|-----|------------|-------------|
+| Travel | 2.5 | 73.00 | 182.50 |
+| Labour | 8.6 | 107.00 | 920.20 |
+| PureMem LE-440 low-energy RO element (8040) | 24 | 668.07 | 16,033.68 |
+| Interconnector & O-ring kit (per vessel) | 

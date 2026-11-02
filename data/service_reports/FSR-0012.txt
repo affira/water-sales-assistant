@@ -1,0 +1,46 @@
+**Field Service Report**  
+**Report Reference:** FSR-0012
+
+---
+
+**Customer:** Desalinas del Norte S.A.  
+**Site Location:** Antofagasta, Chile  
+**Visit Date:** 2023-07-03  
+**Technician:** Rafael Souza  
+
+### Equipment Serviced
+- HPX high-pressure pump (HPX-25) on RO feed
+
+### Scope
+- Pump Seal Replacement — 1 pump
+
+### Time
+
+| Item | Hours |
+|------|-------|
+| On-site work | 5.2 |
+| Travel (round trip) | 8.3 |
+
+### Materials and Parts Used
+
+| Item | Qty | Notes |
+|------|-----|-------|
+| HPX mechanical seal cartridge | 1 |  |
+| PPE & consumables (gloves, wipes, lubricant) | 1 |  |
+
+### Findings
+- Seal failure after dry-running event during feed tank low level.
+- Equipment returned to service and test run completed.
+
+### Cost Summary
+
+| Description | Qty | Rate (USD) | Total (USD) |
+|-------------|-----|------------|-------------|
+| Travel | 8.3 | 74.00 | 614.20 |
+| Labour | 5.2 | 101.00 | 525.20 |
+| HPX mechanical seal cartridge | 1 | 1,474.42 | 1,474.42 |
+| PPE & consumables (gloves, wipes, lubricant) | 1 | 24.66 | 24.66 |
+| **Total** | | | **2,638.48** |
+
+**Technician Signature:** Rafael Souza  
+**Date:** 2023-07-03

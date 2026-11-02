@@ -1,0 +1,15 @@
+FSR-0019
+Cust: Desert Bloom District Cooling
+Site: Dubai
+Date: 16/09/23
+Tech: L. Hartmann
+Equip: LumenUV UV-L80 UV reactor
+
+Arr. site ~7:40, toolbox talk + permit took a while. lamps at ~12,500 h, uv intensity down to 68% of new.
+Work: changed 6 lamps, wiped sleeves, reset hour counter.
+Cal sensors ok. Forgot to log exact start/finish, sorry.
+
+Time: abt 3.7h on site, travel 2.6h total.
+Cost: as per agreement + travel (see last PO).
+
+-Lena

@@ -1,0 +1,16 @@
+Field Service Report
+Reference: FSR-0010
+
+Customer: Agroindustrias Sonora
+Site: Hermosillo, Mexico
+Date of Visit: 24 June 2023
+Technician: Priya Raman
+Equipment: ClarionRO RO-500 reverse osmosis skid
+
+Summary of Work:
+Arrived on site and met the plant team. Feed flow meter drifted; pressure transmitters within tolerance. I recalibrated the conductivity, flow and pressure instruments. Ran the system for a while afterwards and confirmed readings were back within the normal range. Briefed the operators before leaving.
+
+Total time on site was about 2.7 hours, plus 5.8 hours of travel.
+Total cost for this visit (labour, travel and parts): USD 710.00
+
+Please get in touch if anything comes up.

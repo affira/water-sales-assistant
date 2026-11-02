@@ -1,0 +1,15 @@
+FSR-0034
+Cust: Aguas de Levante
+Site: Alicante
+Date: 23/02/24
+Tech: Y. Haddad
+Equip: SoftLine SL-5 duplex softener
+
+Arr. site ~7:40, toolbox talk + permit took a while. resin capacity exhausted early; hardness breakthrough after 60% of design run length.
+Work: resin swap 2 softener vessels, valve looked ok.
+Cal sensors ok. Forgot to log exact start/finish, sorry.
+
+Time: abt 6.3h on site, travel 4.4h total.
+Cost: as per agreement + travel (see last PO).
+
+-Yusuf

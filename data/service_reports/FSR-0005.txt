@@ -1,0 +1,16 @@
+Field Service Report
+Reference: FSR-0005
+
+Customer: Agroindustrias Sonora
+Site: Hermosillo, Mexico
+Date of Visit: 23 March 2023
+Technician: Daniel Okafor
+Equipment: ClarionRO RO-500 reverse osmosis skid
+
+Summary of Work:
+Arrived on site and met the plant team. Autopsy of one lead element showed colloidal fouling consistent with poor pretreatment. I replaced 8 membrane elements and renewed the interconnector O-rings. Ran the system for a while afterwards and confirmed readings were back within the normal range. Briefed the operators before leaving.
+
+Total time on site was about 5.1 hours, plus 5.6 hours of travel.
+Total cost for this visit (labour, travel and parts): USD 6,100.00
+
+Please get in touch if anything comes up.

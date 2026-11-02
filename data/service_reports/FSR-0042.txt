@@ -1,0 +1,46 @@
+**Field Service Report**  
+**Report Reference:** FSR-0042
+
+---
+
+**Customer:** Thames Valley Pharma Ltd  
+**Site Location:** Reading, UK  
+**Visit Date:** 2024-09-23  
+**Technician:** Ingrid Solberg  
+
+### Equipment Serviced
+- LumenUV UV-L250 UV reactor
+
+### Scope
+- Uv Lamp Replacement — 16 lamps
+
+### Time
+
+| Item | Hours |
+|------|-------|
+| On-site work | 7.0 |
+| Travel (round trip) | 2.0 |
+
+### Materials and Parts Used
+
+| Item | Qty | Notes |
+|------|-----|-------|
+| LumenUV amalgam lamp | 16 |  |
+| LumenUV quartz sleeve | 4 |  |
+
+### Findings
+- Two lamps failed; remaining lamps past rated life.
+- Equipment returned to service and test run completed.
+
+### Cost Summary
+
+| Description | Qty | Rate (GBP) | Total (GBP) |
+|-------------|-----|------------|-------------|
+| Travel | 2 | 62.00 | 124.00 |
+| Labour | 7 | 88.00 | 616.00 |
+| LumenUV amalgam lamp | 16 | 241.53 | 3,864.48 |
+| LumenUV quartz sleeve | 4 | 146.21 | 584.84 |
+| **Total** | | | **5,189.32** |
+
+**Technician Signature:** Ingrid Solberg  
+**Date:** 2024-09-23

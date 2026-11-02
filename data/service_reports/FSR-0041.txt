@@ -1,0 +1,15 @@
+FSR-0041
+Cust: Thames Valley Pharma Ltd
+Site: Reading
+Date: 22/08/24
+Tech: P. Raman
+Equip: ClarionRO RO-250 reverse osmosis skid
+
+Arr. site ~7:40, toolbox talk + permit took a while. lead elements showed heavy biofouling and the feed-side spacers were compressed.
+Work: swapped 12 membrane elements, new o-rings on interconnectors, flushed to drain 30 min.
+Cal sensors ok. Forgot to log exact start/finish, sorry.
+
+Time: abt 5.5h on site, travel 1.9h total.
+Cost: as per agreement + travel (see last PO).
+
+-Priya

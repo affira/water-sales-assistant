@@ -1,0 +1,48 @@
+**Field Service Report**  
+**Report Reference:** FSR-0044
+
+---
+
+**Customer:** Gulf Coast Polymers  
+**Site Location:** Corpus Christi, USA  
+**Visit Date:** 2024-10-13  
+**Technician:** Daniel Okafor  
+
+### Equipment Serviced
+- ClarionRO RO-250 reverse osmosis skid
+
+### Scope
+- Membrane Replacement — 6 membrane elements
+
+### Time
+
+| Item | Hours |
+|------|-------|
+| On-site work | 5.1 |
+| Travel (round trip) | 6.0 |
+
+### Materials and Parts Used
+
+| Item | Qty | Notes |
+|------|-----|-------|
+| PureMem BW-400 RO element (8040) | 6 | Customer stock — no charge |
+| Interconnector & O-ring kit (per vessel) | 1 |  |
+| PPE & consumables (gloves, wipes, lubricant) | 1 |  |
+
+### Findings
+- Lead elements showed heavy biofouling and the feed-side spacers were compressed.
+- Equipment returned to service and test run completed.
+
+### Cost Summary
+
+| Description | Qty | Rate (USD) | Total (USD) |
+|-------------|-----|------------|-------------|
+| Travel | 6 | 92.00 | 552.00 |
+| Labour | 5.1 | 139.00 | 708.90 |
+| PureMem BW-400 RO element (8040) | 6 | 0.00 | 0.00 |
+| Interconnector & O-ring kit (per vessel) | 1 | 43.91 | 43.91 |
+| PPE & consumables (gloves, wipes, lubricant) | 1 | 23.83 | 23.83 |
+| **Total** | | | **1,328.64** |
+
+**Technician Signature:** Daniel Okafor  
+**Date:** 2024-10-13

@@ -1,0 +1,44 @@
+**Field Service Report**  
+**Report Reference:** FSR-0037
+
+---
+
+**Customer:** Pilbara Mine Water Pty Ltd  
+**Site Location:** Port Hedland, Australia  
+**Visit Date:** 2024-07-08  
+**Technician:** Mateo Fernández  
+
+### Equipment Serviced
+- AquaTune Optimizer (RO control software)
+
+### Scope
+- Software Update
+
+### Time
+
+| Item | Hours |
+|------|-------|
+| On-site work | 5.9 |
+| Travel (round trip) | 12.2 |
+
+### Materials and Parts Used
+
+| Item | Qty | Notes |
+|------|-----|-------|
+| AquaTune software update licence | 1 |  |
+
+### Findings
+- Updated AquaTune to the latest release after feed water source change; retuned dosing model.
+- Equipment returned to service and test run completed.
+
+### Cost Summary
+
+| Description | Qty | Rate (AUD) | Total (AUD) |
+|-------------|-----|------------|-------------|
+| Travel | 12.2 | 99.00 | 1,207.80 |
+| Labour | 5.9 | 152.00 | 896.80 |
+| AquaTune software update licence | 1 | 3,102.93 | 3,102.93 |
+| **Total** | | | **5,207.53** |
+
+**Technician Signature:** Mateo Fernández  
+**Date:** 2024-07-08

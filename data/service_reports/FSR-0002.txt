@@ -1,0 +1,15 @@
+FSR-0002
+Cust: Coromandel Textiles
+Site: Tiruppur
+Date: 24/02/23
+Tech: P. Raman
+Equip: HPX high-pressure pump (HPX-50) on RO feed
+
+Arr. site ~7:40, toolbox talk + permit took a while. seal failure after dry-running event during feed tank low level.
+Work: changed mech seal, realigned coupling, no leaks after.
+Cal sensors ok. Forgot to log exact start/finish, sorry.
+
+Time: abt 5.6h on site, travel 5.8h total.
+Cost: as per agreement + travel (see last PO).
+
+-Priya

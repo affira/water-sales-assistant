@@ -1,0 +1,44 @@
+**Field Service Report**  
+**Report Reference:** FSR-0032
+
+---
+
+**Customer:** Agroindustrias Sonora  
+**Site Location:** Hermosillo, Mexico  
+**Visit Date:** 2024-02-01  
+**Technician:** Daniel Okafor  
+
+### Equipment Serviced
+- DosePro DP-10 metering pumps (antiscalant dosing)
+
+### Scope
+- Diaphragm Replacement — 4 pumps
+
+### Time
+
+| Item | Hours |
+|------|-------|
+| On-site work | 3.7 |
+| Travel (round trip) | 5.7 |
+
+### Materials and Parts Used
+
+| Item | Qty | Notes |
+|------|-----|-------|
+| DosePro DP-10 diaphragm kit | 4 |  |
+
+### Findings
+- Antiscalant pump output down ~15%; diaphragms stiff and cracked at the edge.
+- Equipment returned to service and test run completed.
+
+### Cost Summary
+
+| Description | Qty | Rate (MXN) | Total (MXN) |
+|-------------|-----|------------|-------------|
+| Travel | 5.7 | 1,250 | 7,125 |
+| Labour | 3.7 | 1,721 | 6,368 |
+| DosePro DP-10 diaphragm kit | 4 | 2,392 | 9,568 |
+| **Total** | | | **23,061** |
+
+**Technician Signature:** Daniel Okafor  
+**Date:** 2024-02-01

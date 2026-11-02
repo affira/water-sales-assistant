@@ -1,0 +1,46 @@
+**Field Service Report**  
+**Report Reference:** FSR-0030
+
+---
+
+**Customer:** Valle Verde Foods  
+**Site Location:** Rancagua, Chile  
+**Visit Date:** 2024-01-23  
+**Technician:** Daniel Okafor  
+
+### Equipment Serviced
+- SoftLine SL-10 duplex softener
+
+### Scope
+- Resin Replacement — 2 softener vessels
+
+### Time
+
+| Item | Hours |
+|------|-------|
+| On-site work | 8.0 |
+| Travel (round trip) | 3.1 |
+
+### Materials and Parts Used
+
+| Item | Qty | Notes |
+|------|-----|-------|
+| SAC softener resin, 25 L bag | 16 |  |
+| SoftLine control valve rebuild kit | 1 |  |
+
+### Findings
+- Resin capacity exhausted early; hardness breakthrough after 60% of design run length.
+- Equipment returned to service and test run completed.
+
+### Cost Summary
+
+| Description | Qty | Rate (USD) | Total (USD) |
+|-------------|-----|------------|-------------|
+| Travel | 3.1 | 78.00 | 241.80 |
+| Labour | 8 | 109.00 | 872.00 |
+| SAC softener resin, 25 L bag | 16 | 96.99 | 1,551.84 |
+| SoftLine control valve rebuild kit | 1 | 275.21 | 275.21 |
+| **Total** | | | **2,940.85** |
+
+**Technician Signature:** Daniel Okafor  
+**Date:** 2024-01-23

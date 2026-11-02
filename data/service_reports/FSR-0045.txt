@@ -1,0 +1,48 @@
+**Field Service Report**  
+**Report Reference:** FSR-0045
+
+---
+
+**Customer:** Karoo Municipal Water  
+**Site Location:** Beaufort West, South Africa  
+**Visit Date:** 2024-10-20  
+**Technician:** Chloe Bennett  
+
+### Equipment Serviced
+- ClarionRO RO-500 reverse osmosis skid
+
+### Scope
+- Cip Cleaning — 4 pressure vessels
+
+### Time
+
+| Item | Hours |
+|------|-------|
+| On-site work | 6.7 |
+| Travel (round trip) | 6.7 |
+
+### Materials and Parts Used
+
+| Item | Qty | Notes |
+|------|-----|-------|
+| Acid cleaner CL-A, 25 L | 4 |  |
+| Alkaline cleaner CL-B, 25 L | 4 |  |
+| PPE & consumables (gloves, wipes, lubricant) | 1 |  |
+
+### Findings
+- Normalized dp up ~20% on stage 1, permeate flow down ~12%.
+- Equipment returned to service and test run completed.
+
+### Cost Summary
+
+| Description | Qty | Rate (ZAR) | Total (ZAR) |
+|-------------|-----|------------|-------------|
+| Travel | 6.7 | 1,113 | 7,457 |
+| Labour | 6.7 | 1,716 | 11,497 |
+| Acid cleaner CL-A, 25 L | 4 | 2,705 | 10,820 |
+| Alkaline cleaner CL-B, 25 L | 4 | 3,055 | 12,220 |
+| PPE & consumables (gloves, wipes, lubricant) | 1 | 464 | 464 |
+| **Total** | | | **42,458** |
+
+**Technician Signature:** Chloe Bennett  
+**Date:** 2024-10-20

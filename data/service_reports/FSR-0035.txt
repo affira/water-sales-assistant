@@ -1,0 +1,15 @@
+FSR-0035
+Cust: Kestrel Beverage Co.
+Site: Fort Worth
+Date: 17/04/24
+Tech: Y. Haddad
+Equip: ClarionRO RO-500 reverse osmosis skid
+
+Arr. site ~7:40, toolbox talk + permit took a while. normalized dp up ~20% on stage 1, permeate flow down ~12%.
+Work: CIP 4 pressure vessels, acid then high pH, rinse, back online.
+Cal sensors ok. Forgot to log exact start/finish, sorry.
+
+Time: abt 9.2h on site, travel 2.8h total.
+Cost: as per agreement + travel (see last PO).
+
+-Yusuf

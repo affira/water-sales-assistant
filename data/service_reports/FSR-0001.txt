@@ -1,0 +1,48 @@
+**Field Service Report**  
+**Report Reference:** FSR-0001
+
+---
+
+**Customer:** Al Noor Industrial Water  
+**Site Location:** Jubail, Saudi Arabia  
+**Visit Date:** 2023-02-10  
+**Technician:** Priya Raman  
+
+### Equipment Serviced
+- HPX high-pressure pump (HPX-50) on RO feed
+
+### Scope
+- Pump Overhaul — 1 pump
+
+### Time
+
+| Item | Hours |
+|------|-------|
+| On-site work | 12.1 |
+| Travel (round trip) | 7.1 |
+
+### Materials and Parts Used
+
+| Item | Qty | Notes |
+|------|-----|-------|
+| HPX mechanical seal cartridge | 1 |  |
+| HPX bearing set | 1 |  |
+| PPE & consumables (gloves, wipes, lubricant) | 1 |  |
+
+### Findings
+- Bearing noise and elevated vibration (7.1 mm/s); seal also near end of life.
+- Equipment returned to service and test run completed.
+
+### Cost Summary
+
+| Description | Qty | Rate (SAR) | Total (SAR) |
+|-------------|-----|------------|-------------|
+| Travel | 7.1 | 274 | 1,945 |
+| Labour | 12.1 | 430 | 5,203 |
+| HPX mechanical seal cartridge | 1 | 5,518 | 5,518 |
+| HPX bearing set | 1 | 1,517 | 1,517 |
+| PPE & consumables (gloves, wipes, lubricant) | 1 | 97 | 97 |
+| **Total** | | | **14,280** |
+
+**Technician Signature:** Priya Raman  
+**Date:** 2023-02-10

@@ -1,0 +1,15 @@
+FSR-0011
+Cust: Thames Valley Pharma Ltd
+Site: Reading
+Date: 25/06/23
+Tech: D. Okafor
+Equip: UltraGuard UG-50 ultrafiltration system
+
+Arr. site ~7:40, toolbox talk + permit took a while. all racks passed the pressure decay test except one module, isolated for repair.
+Work: PDT on all racks, 1 module isolated, pins in.
+Cal sensors ok. Forgot to log exact start/finish, sorry.
+
+Time: abt 4.5h on site, travel 1.7h total.
+Cost: as per agreement + travel (see last PO).
+
+-Daniel

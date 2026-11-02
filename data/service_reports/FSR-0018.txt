@@ -1,0 +1,46 @@
+**Field Service Report**  
+**Report Reference:** FSR-0018
+
+---
+
+**Customer:** Rheinwerk Chemie GmbH  
+**Site Location:** Ludwigshafen, Germany  
+**Visit Date:** 2023-09-04  
+**Technician:** Priya Raman  
+
+### Equipment Serviced
+- HPX high-pressure pump (HPX-25) on RO feed
+
+### Scope
+- Pump Seal Replacement — 1 pump
+
+### Time
+
+| Item | Hours |
+|------|-------|
+| On-site work | 4.5 |
+| Travel (round trip) | 2.8 |
+
+### Materials and Parts Used
+
+| Item | Qty | Notes |
+|------|-----|-------|
+| HPX mechanical seal cartridge | 1 |  |
+| PPE & consumables (gloves, wipes, lubricant) | 1 |  |
+
+### Findings
+- Seal failure after dry-running event during feed tank low level.
+- Equipment returned to service and test run completed.
+
+### Cost Summary
+
+| Description | Qty | Rate (EUR) | Total (EUR) |
+|-------------|-----|------------|-------------|
+| Travel | 2.8 | 69.00 | 193.20 |
+| Labour | 4.5 | 107.00 | 481.50 |
+| HPX mechanical seal cartridge | 1 | 1,397.04 | 1,397.04 |
+| PPE & consumables (gloves, wipes, lubricant) | 1 | 24.19 | 24.19 |
+| **Total** | | | **2,095.93** |
+
+**Technician Signature:** Priya Raman  
+**Date:** 2023-09-04

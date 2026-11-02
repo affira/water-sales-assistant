@@ -1,0 +1,16 @@
+Field Service Report
+Reference: FSR-0027
+
+Customer: Pilbara Mine Water Pty Ltd
+Site: Port Hedland, Australia
+Date of Visit: 7 January 2024
+Technician: Daniel Okafor
+Equipment: UltraGuard UG-400 ultrafiltration system
+
+Summary of Work:
+Arrived on site and met the plant team. Modules irreversibly fouled after a turbidity event; TMP no longer recovering after CEB. I replaced 10 UF modules and re-ran the integrity test. Ran the system for a while afterwards and confirmed readings were back within the normal range. Briefed the operators before leaving.
+
+Total time on site was about 11.5 hours, plus 10.3 hours of travel.
+Total cost for this visit (labour, travel and parts): $31,920.00
+
+Please get in touch if anything comes up.

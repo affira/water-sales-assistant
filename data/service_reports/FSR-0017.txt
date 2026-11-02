@@ -1,0 +1,16 @@
+Field Service Report
+Reference: FSR-0017
+
+Customer: Karoo Municipal Water
+Site: Beaufort West, South Africa
+Date of Visit: 31 August 2023
+Technician: Daniel Okafor
+Equipment: ClarionRO RO-500 reverse osmosis skid
+
+Summary of Work:
+Arrived on site and met the plant team. Elements were past 5 years in service; permeate conductivity trending above spec. I replaced 12 membrane elements and renewed the interconnector O-rings. Ran the system for a while afterwards and confirmed readings were back within the normal range. Briefed the operators before leaving.
+
+Total time on site was about 8.1 hours, plus 7.2 hours of travel.
+Total cost for this visit (labour, travel and parts): ZAR 165,800
+
+Please get in touch if anything comes up.

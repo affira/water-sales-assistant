@@ -1,0 +1,44 @@
+**Field Service Report**  
+**Report Reference:** FSR-0033
+
+---
+
+**Customer:** Kestrel Beverage Co.  
+**Site Location:** Fort Worth, USA  
+**Visit Date:** 2024-02-02  
+**Technician:** Rafael Souza  
+
+### Equipment Serviced
+- LumenUV UV-L80 UV reactor
+
+### Scope
+- Uv Lamp Replacement — 6 lamps
+
+### Time
+
+| Item | Hours |
+|------|-------|
+| On-site work | 4.5 |
+| Travel (round trip) | 3.3 |
+
+### Materials and Parts Used
+
+| Item | Qty | Notes |
+|------|-----|-------|
+| LumenUV amalgam lamp | 6 |  |
+
+### Findings
+- Two lamps failed; remaining lamps past rated life.
+- Equipment returned to service and test run completed.
+
+### Cost Summary
+
+| Description | Qty | Rate (USD) | Total (USD) |
+|-------------|-----|------------|-------------|
+| Travel | 3.3 | 87.00 | 287.10 |
+| Labour | 4.5 | 140.00 | 630.00 |
+| LumenUV amalgam lamp | 6 | 324.18 | 1,945.08 |
+| **Total** | | | **2,862.18** |
+
+**Technician Signature:** Rafael Souza  
+**Date:** 2024-02-02

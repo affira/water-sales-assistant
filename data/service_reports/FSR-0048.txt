@@ -1,0 +1,50 @@
+**Field Service Report**  
+**Report Reference:** FSR-0048
+
+---
+
+**Customer:** Aguas de Levante  
+**Site Location:** Alicante, Spain  
+**Visit Date:** 2024-11-16  
+**Technician:** Chloe Bennett  
+
+### Equipment Serviced
+- ClarionRO RO-500 reverse osmosis skid
+
+### Scope
+- Membrane Replacement — 12 membrane elements
+
+### Time
+
+| Item | Hours |
+|------|-------|
+| On-site work | 6.8 |
+| Travel (round trip) | 4.1 |
+
+### Materials and Parts Used
+
+| Item | Qty | Notes |
+|------|-----|-------|
+| PureMem BW-400 RO element (8040) | 12 |  |
+| Interconnector & O-ring kit (per vessel) | 2 |  |
+| PPE & consumables (gloves, wipes, lubricant) | 1 |  |
+
+### Findings
+- Elements were past 5 years in service; permeate conductivity trending above spec.
+- Equipment returned to service and test run completed.
+
+### Cost Summary
+
+| Description | Qty | Rate (EUR) | Total (EUR) |
+|-------------|-----|------------|-------------|
+| Travel | 4.1 | 58.00 | 237.80 |
+| Labour | 6.8 | 84.00 | 571.20 |
+| PureMem BW-400 RO element (8040) | 12 | 626.95 | 7,523.40 |
+| Interconnector & O-ring kit (per vessel) | 2 | 42.55 | 85.10 |
+| PPE & consumables (gloves, wipes, lubricant) | 1 | 24.69 | 24.69 |
+| **Subtotal** | | | **8,442.19** |
+| VAT (21%) | | | 1,772.86 |
+| **Total incl. VAT** | | | **10,215.05** |
+
+**Technician Signature:** Chloe Bennett  
+**Date:** 2024-11-16

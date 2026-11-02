@@ -1,0 +1,48 @@
+**Field Service Report**  
+**Report Reference:** FSR-0038
+
+---
+
+**Customer:** Al Noor Industrial Water  
+**Site Location:** Jubail, Saudi Arabia  
+**Visit Date:** 2024-07-11  
+**Technician:** Daniel Okafor  
+
+### Equipment Serviced
+- ClarionRO RO-1000 reverse osmosis skid
+
+### Scope
+- Membrane Replacement — 48 membrane elements
+
+### Time
+
+| Item | Hours |
+|------|-------|
+| On-site work | 17.8 |
+| Travel (round trip) | 7.2 |
+
+### Materials and Parts Used
+
+| Item | Qty | Notes |
+|------|-----|-------|
+| PureMem BW-400 RO element (8040) | 48 |  |
+| Interconnector & O-ring kit (per vessel) | 8 |  |
+| PPE & consumables (gloves, wipes, lubricant) | 1 |  |
+
+### Findings
+- Lead elements showed heavy biofouling and the feed-side spacers were compressed.
+- Equipment returned to service and test run completed.
+
+### Cost Summary
+
+| Description | Qty | Rate (SAR) | Total (SAR) |
+|-------------|-----|------------|-------------|
+| Travel | 7.2 | 289 | 2,081 |
+| Labour | 17.8 | 416 | 7,405 |
+| PureMem BW-400 RO element (8040) | 48 | 2,416 | 115,968 |
+| Interconnector & O-ring kit (per vessel) | 8 | 182 | 1,456 |
+| PPE & consumables (gloves, wipes, lubricant) | 1 | 90 | 90 |
+| **Total** | | | **127,000** |
+
+**Technician Signature:** Daniel Okafor  
+**Date:** 2024-07-11

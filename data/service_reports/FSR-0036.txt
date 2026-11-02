@@ -1,0 +1,46 @@
+**Field Service Report**  
+**Report Reference:** FSR-0036
+
+---
+
+**Customer:** Coromandel Textiles  
+**Site Location:** Tiruppur, India  
+**Visit Date:** 2024-04-26  
+**Technician:** Rafael Souza  
+
+### Equipment Serviced
+- CarbonGuard 2.0 m activated carbon filters
+
+### Scope
+- Media Replacement — 2 filter vessels
+
+### Time
+
+| Item | Hours |
+|------|-------|
+| On-site work | 10.1 |
+| Travel (round trip) | 6.3 |
+
+### Materials and Parts Used
+
+| Item | Qty | Notes |
+|------|-----|-------|
+| Activated carbon media, 25 kg bag | 40 |  |
+| PPE & consumables (gloves, wipes, lubricant) | 1 |  |
+
+### Findings
+- Carbon exhausted — free chlorine breakthrough to RO feed measured at 0.3 mg/L.
+- Equipment returned to service and test run completed.
+
+### Cost Summary
+
+| Description | Qty | Rate (INR) | Total (INR) |
+|-------------|-----|------------|-------------|
+| Travel | 6.3 | 3,189 | 20,091 |
+| Labour | 10.1 | 5,122 | 51,732 |
+| Activated carbon media, 25 kg bag | 40 | 7,441 | 297,640 |
+| PPE & consumables (gloves, wipes, lubricant) | 1 | 2,074 | 2,074 |
+| **Total** | | | **371,537** |
+
+**Technician Signature:** Rafael Souza  
+**Date:** 2024-04-26

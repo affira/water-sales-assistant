@@ -1,0 +1,48 @@
+**Field Service Report**  
+**Report Reference:** FSR-0020
+
+---
+
+**Customer:** Kestrel Beverage Co.  
+**Site Location:** Fort Worth, USA  
+**Visit Date:** 2023-10-09  
+**Technician:** Ingrid Solberg  
+
+### Equipment Serviced
+- ClarionRO RO-500 reverse osmosis skid
+
+### Scope
+- Membrane Replacement — 24 membrane elements
+
+### Time
+
+| Item | Hours |
+|------|-------|
+| On-site work | 11.0 |
+| Travel (round trip) | 3.0 |
+
+### Materials and Parts Used
+
+| Item | Qty | Notes |
+|------|-----|-------|
+| PureMem BW-400 RO element (8040) | 24 |  |
+| Interconnector & O-ring kit (per vessel) | 4 |  |
+| PPE & consumables (gloves, wipes, lubricant) | 1 |  |
+
+### Findings
+- Normalized permeate flow had dropped ~18% and salt passage roughly doubled since the last CIP.
+- Equipment returned to service and test run completed.
+
+### Cost Summary
+
+| Description | Qty | Rate (USD) | Total (USD) |
+|-------------|-----|------------|-------------|
+| Travel | 3 | 91.00 | 273.00 |
+| Labour | 11 | 141.00 | 1,551.00 |
+| PureMem BW-400 RO element (8040) | 24 | 612.73 | 14,705.52 |
+| Interconnector & O-ring kit (per vessel) | 4 | 45.72 | 182.88 |
+| PPE & consumables (gloves, wipes, lubricant) | 1 | 26.52 | 26.52 |
+| **Total** | | | **16,738.92** |
+
+**Technician Signature:** Ingrid Solberg  
+**Date:** 2023-10-09

@@ -1,0 +1,16 @@
+Field Service Report
+Reference: FSR-0026
+
+Customer: Rheinwerk Chemie GmbH
+Site: Ludwigshafen, Germany
+Date of Visit: 7 December 2023
+Technician: Mateo Fernández
+Equipment: UltraGuard UG-150 ultrafiltration system
+
+Summary of Work:
+Arrived on site and met the plant team. All racks passed the pressure decay test except one module, isolated for repair. I ran the pressure decay test on all racks and isolated one module. Ran the system for a while afterwards and confirmed readings were back within the normal range. Briefed the operators before leaving.
+
+Total time on site was about 4.1 hours, plus 2.3 hours of travel.
+Total cost for this visit (labour, travel and parts): EUR 620.00
+
+Please get in touch if anything comes up.

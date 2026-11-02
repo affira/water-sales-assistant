@@ -1,0 +1,15 @@
+FSR-0028
+Cust: Desalinas del Norte S.A.
+Site: Antofagasta
+Date: 14/01/24 (Sat)
+Tech: P. Raman
+Equip: ClarionRO RO-1000 reverse osmosis skid
+
+Arr. site ~7:40, toolbox talk + permit took a while. general inspection; minor leak at a sample valve, vessels and frame in good condition.
+Work: walkdown, checked vessels / frame / valves, sample valve leaking - tightened.
+Cal sensors ok. Forgot to log exact start/finish, sorry.
+
+Time: abt 3.7h on site, travel 10.7h total.
+Cost: as per agreement + travel (see last PO).
+
+-Priya

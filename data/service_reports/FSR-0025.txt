@@ -1,0 +1,15 @@
+FSR-0025
+Cust: Al Noor Industrial Water
+Site: Jubail
+Date: 28/11/23
+Tech: L. Hartmann
+Equip: HydraBed 3.0 m multimedia filters
+
+Arr. site ~7:40, toolbox talk + permit took a while. media heavily mud-balled; filtered water turbidity >2 ntu after backwash.
+Work: dug out media 2 filter vessels, refilled garnet/sand/anthracite, backwashed x2.
+Cal sensors ok. Forgot to log exact start/finish, sorry.
+
+Time: abt 18.8h on site, travel 7.8h total.
+Cost: as per agreement + travel (see last PO).
+
+-Lena

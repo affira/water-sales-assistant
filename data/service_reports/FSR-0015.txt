@@ -1,0 +1,48 @@
+**Field Service Report**  
+**Report Reference:** FSR-0015
+
+---
+
+**Customer:** Desalinas del Norte S.A.  
+**Site Location:** Antofagasta, Chile  
+**Visit Date:** 2023-08-21  
+**Technician:** Yusuf Haddad  
+
+### Equipment Serviced
+- HydraBed 2.4 m multimedia filters
+
+### Scope
+- Media Replacement — 2 filter vessels
+
+### Time
+
+| Item | Hours |
+|------|-------|
+| On-site work | 14.6 |
+| Travel (round trip) | 8.4 |
+
+### Materials and Parts Used
+
+| Item | Qty | Notes |
+|------|-----|-------|
+| Anthracite media, 25 kg bag | 24 |  |
+| Filter sand media, 25 kg bag | 60 |  |
+| Garnet media, 25 kg bag | 16 |  |
+
+### Findings
+- Media heavily mud-balled; filtered water turbidity >2 NTU after backwash.
+- Equipment returned to service and test run completed.
+
+### Cost Summary
+
+| Description | Qty | Rate (USD) | Total (USD) |
+|-------------|-----|------------|-------------|
+| Travel | 8.4 | 76.00 | 638.40 |
+| Labour | 14.6 | 103.00 | 1,503.80 |
+| Anthracite media, 25 kg bag | 24 | 36.79 | 882.96 |
+| Filter sand media, 25 kg bag | 60 | 13.63 | 817.80 |
+| Garnet media, 25 kg bag | 16 | 42.43 | 678.88 |
+| **Total** | | | **4,521.84** |
+
+**Technician Signature:** Yusuf Haddad  
+**Date:** 2023-08-21

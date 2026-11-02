@@ -1,0 +1,46 @@
+**Field Service Report**  
+**Report Reference:** FSR-0006
+
+---
+
+**Customer:** Aguas de Levante  
+**Site Location:** Alicante, Spain  
+**Visit Date:** 2023-03-30  
+**Technician:** Mateo Fernández  
+
+### Equipment Serviced
+- AquaTune Optimizer (RO control software)
+
+### Scope
+- Commissioning
+
+### Time
+
+| Item | Hours |
+|------|-------|
+| On-site work | 12.2 |
+| Travel (round trip) | 4.3 |
+
+### Materials and Parts Used
+
+| Item | Qty | Notes |
+|------|-----|-------|
+| AquaTune edge controller | 1 |  |
+| AquaTune I/O retrofit kit | 1 |  |
+
+### Findings
+- Connected AquaTune to the RO PLC via Modbus TCP; normalization baseline captured.
+- Equipment returned to service and test run completed.
+
+### Cost Summary
+
+| Description | Qty | Rate (EUR) | Total (EUR) |
+|-------------|-----|------------|-------------|
+| Travel | 4.3 | 56.00 | 240.80 |
+| Labour | 12.2 | 82.00 | 1,000.40 |
+| AquaTune edge controller | 1 | 5,920.36 | 5,920.36 |
+| AquaTune I/O retrofit kit | 1 | 2,354.26 | 2,354.26 |
+| **Total** | | | **9,515.82** |
+
+**Technician Signature:** Mateo Fernández  
+**Date:** 2023-03-30

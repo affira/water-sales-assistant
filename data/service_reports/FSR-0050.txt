@@ -1,0 +1,16 @@
+Field Service Report
+Reference: FSR-0050
+
+Customer: Karoo Municipal Water
+Site: Beaufort West, South Africa
+Date of Visit: 8 December 2024
+Technician: Rafael Souza
+Equipment: HydraBed 1.6 m multimedia filters
+
+Summary of Work:
+Arrived on site and met the plant team. Media heavily mud-balled; filtered water turbidity >2 NTU after backwash. I removed and replaced the media in 3 filter vessels. Ran the system for a while afterwards and confirmed readings were back within the normal range. Briefed the operators before leaving.
+
+Total time on site was about 20.2 hours, plus 7.5 hours of travel.
+Total cost for this visit (labour, travel and parts): ZAR 108,100
+
+Please get in touch if anything comes up.

@@ -1,0 +1,48 @@
+**Field Service Report**  
+**Report Reference:** FSR-0004
+
+---
+
+**Customer:** Valle Verde Foods  
+**Site Location:** Rancagua, Chile  
+**Visit Date:** 2023-03-21  
+**Technician:** Ingrid Solberg  
+
+### Equipment Serviced
+- ClarionRO RO-250 reverse osmosis skid
+
+### Scope
+- Cip Cleaning — 2 pressure vessels
+
+### Time
+
+| Item | Hours |
+|------|-------|
+| On-site work | 10.4 |
+| Travel (round trip) | 3.0 |
+
+### Materials and Parts Used
+
+| Item | Qty | Notes |
+|------|-----|-------|
+| Acid cleaner CL-A, 25 L | 3 |  |
+| Alkaline cleaner CL-B, 25 L | 3 |  |
+| PPE & consumables (gloves, wipes, lubricant) | 1 |  |
+
+### Findings
+- Normalized dp up ~20% on stage 1, permeate flow down ~12%.
+- Equipment returned to service and test run completed.
+
+### Cost Summary
+
+| Description | Qty | Rate (USD) | Total (USD) |
+|-------------|-----|------------|-------------|
+| Travel | 3 | 79.00 | 237.00 |
+| Labour | 10.4 | 104.00 | 1,081.60 |
+| Acid cleaner CL-A, 25 L | 3 | 142.63 | 427.89 |
+| Alkaline cleaner CL-B, 25 L | 3 | 177.58 | 532.74 |
+| PPE & consumables (gloves, wipes, lubricant) | 1 | 26.55 | 26.55 |
+| **Total** | | | **2,305.78** |
+
+**Technician Signature:** Ingrid Solberg  
+**Date:** 2023-03-21

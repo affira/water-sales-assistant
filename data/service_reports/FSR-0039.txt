@@ -1,0 +1,46 @@
+**Field Service Report**  
+**Report Reference:** FSR-0039
+
+---
+
+**Customer:** Aguas de Levante  
+**Site Location:** Alicante, Spain  
+**Visit Date:** 2024-07-27  
+**Technician:** Priya Raman  
+
+### Equipment Serviced
+- UltraGuard UG-150 ultrafiltration system
+
+### Scope
+- Uf Module Replacement — 6 UF modules
+
+### Time
+
+| Item | Hours |
+|------|-------|
+| On-site work | 8.9 |
+| Travel (round trip) | 4.0 |
+
+### Materials and Parts Used
+
+| Item | Qty | Notes |
+|------|-----|-------|
+| UltraGuard UG-M80 UF module | 6 |  |
+| PPE & consumables (gloves, wipes, lubricant) | 1 |  |
+
+### Findings
+- Pressure decay test failed on several modules — fibre breakage suspected.
+- Equipment returned to service and test run completed.
+
+### Cost Summary
+
+| Description | Qty | Rate (EUR) | Total (EUR) |
+|-------------|-----|------------|-------------|
+| Travel | 4 | 59.00 | 236.00 |
+| Labour | 8.9 | 85.00 | 756.50 |
+| UltraGuard UG-M80 UF module | 6 | 1,836.70 | 11,020.20 |
+| PPE & consumables (gloves, wipes, lubricant) | 1 | 24.21 | 24.21 |
+| **Total** | | | **12,036.91** |
+
+**Technician Signature:** Priya Raman  
+**Date:** 2024-07-27

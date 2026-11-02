@@ -1,0 +1,48 @@
+**Field Service Report**  
+**Report Reference:** FSR-0049
+
+---
+
+**Customer:** Coromandel Textiles  
+**Site Location:** Tiruppur, India  
+**Visit Date:** 2024-11-25 (Saturday call-out)  
+**Technician:** Chloe Bennett  
+
+### Equipment Serviced
+- ClarionRO RO-1000 reverse osmosis skid
+
+### Scope
+- Membrane Replacement — 18 membrane elements
+
+### Time
+
+| Item | Hours |
+|------|-------|
+| On-site work | 8.4 |
+| Travel (round trip) | 6.8 |
+
+### Materials and Parts Used
+
+| Item | Qty | Notes |
+|------|-----|-------|
+| PureMem BW-400 RO element (8040) | 18 |  |
+| Interconnector & O-ring kit (per vessel) | 3 |  |
+| PPE & consumables (gloves, wipes, lubricant) | 1 |  |
+
+### Findings
+- Autopsy of one lead element showed colloidal fouling consistent with poor pretreatment.
+- Equipment returned to service and test run completed.
+
+### Cost Summary
+
+| Description | Qty | Rate (INR) | Total (INR) |
+|-------------|-----|------------|-------------|
+| Travel | 6.8 | 3,323 | 22,596 |
+| Labour (weekend rate) | 8.4 | 8,026 | 67,418 |
+| PureMem BW-400 RO element (8040) | 18 | 55,012 | 990,216 |
+| Interconnector & O-ring kit (per vessel) | 3 | 3,696 | 11,088 |
+| PPE & consumables (gloves, wipes, lubricant) | 1 | 2,000 | 2,000 |
+| **Total** | | | **1,093,319** |
+
+**Technician Signature:** Chloe Bennett  
+**Date:** 2024-11-25

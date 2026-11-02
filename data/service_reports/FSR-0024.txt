@@ -1,0 +1,7 @@
+FSR-0024
+Customer: Rheinwerk Chemie GmbH
+Location: Ludwigshafen, Germany
+Date: 2023-11-05
+Technician: Chloe Bennett
+
+Carried out standard maintenance on AquaTune Optimizer (RO control software). Checked equipment, replaced worn parts as needed. Total on-site hours: 6.4h. Travel: 2.6h. Invoice to follow.

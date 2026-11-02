@@ -1,0 +1,16 @@
+Field Service Report
+Reference: FSR-0014
+
+Customer: Pilbara Mine Water Pty Ltd
+Site: Port Hedland, Australia
+Date of Visit: 11 August 2023
+Technician: Yusuf Haddad
+Equipment: ClarionRO RO-250 reverse osmosis skid
+
+Summary of Work:
+Arrived on site and met the plant team. Normalized permeate flow had dropped ~18% and salt passage roughly doubled since the last CIP. I replaced 12 membrane elements and renewed the interconnector O-rings. Ran the system for a while afterwards and confirmed readings were back within the normal range. Briefed the operators before leaving.
+
+Total time on site was about 6.3 hours, plus 10.5 hours of travel.
+Total cost for this visit (labour, travel and parts): $15,450.00
+
+Please get in touch if anything comes up.

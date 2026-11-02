@@ -1,0 +1,80 @@
+"""Command-line chat.
+
+    python -m aquaassist.cli               interactive chat
+    python -m aquaassist.cli --trace       also show tool calls and reasoning summaries
+    python -m aquaassist.cli --once "..."  answer one message and exit
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+
+import anthropic
+
+from . import config
+from .agent import Agent
+
+DIM, CYAN, RESET = "\033[2m", "\033[36m", "\033[0m"
+
+
+def make_tracer(enabled: bool):
+    def on_event(kind: str, data: dict) -> None:
+        if not enabled:
+            return
+        if kind == "thinking":
+            print(f"{DIM}  · {data['text'].strip()[:400]}{RESET}")
+        elif kind == "tool_call":
+            print(f"{CYAN}  → {data['name']}({json.dumps(data['input'])}){RESET}")
+        elif kind == "tool_result":
+            preview = data["output"].replace("\n", " ")
+            print(f"{DIM}  ← {'ERROR ' if data['is_error'] else ''}{preview[:300]}{'…' if len(preview) > 300 else ''}{RESET}")
+    return on_event
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Norvale sales assistant")
+    parser.add_argument("--trace", action="store_true", help="show tool calls and reasoning summaries")
+    parser.add_argument("--once", metavar="MESSAGE", help="answer a single message and exit")
+    args = parser.parse_args()
+
+    if not config.RECORDS_PATH.exists():
+        sys.exit("Service records not built yet. Run: python -m aquaassist.ingest")
+
+    agent = Agent(show_thinking=args.trace)
+    tracer = make_tracer(args.trace)
+
+    def answer(text: str) -> None:
+        try:
+            print(f"\nAssistant: {agent.ask(text, tracer)}\n")
+        except anthropic.AuthenticationError:
+            sys.exit("Authentication failed: set ANTHROPIC_API_KEY.")
+        except anthropic.APIConnectionError:
+            print("Network error reaching the API; try again.")
+        except anthropic.APIStatusError as exc:
+            print(f"API error {exc.status_code}: {exc.message}")
+
+    if args.once:
+        answer(args.once)
+        return
+
+    print(f"Norvale sales assistant ({config.MODEL}). Commands: /reset, /quit\n")
+    while True:
+        try:
+            text = input("You: ").strip()
+        except (EOFError, KeyboardInterrupt):
+            print()
+            break
+        if not text:
+            continue
+        if text in ("/quit", "/exit"):
+            break
+        if text == "/reset":
+            agent.reset()
+            print("(conversation cleared)\n")
+            continue
+        answer(text)
+
+
+if __name__ == "__main__":
+    main()

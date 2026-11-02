@@ -1,0 +1,16 @@
+Field Service Report
+Reference: FSR-0031
+
+Customer: Al Noor Industrial Water
+Site: Jubail, Saudi Arabia
+Date of Visit: 31 January 2024
+Technician: Yusuf Haddad
+Equipment: AquaTune Optimizer (RO control software)
+
+Summary of Work:
+Arrived on site and met the plant team. Connected AquaTune to the RO PLC via Modbus TCP; normalization baseline captured. I commissioned the AquaTune Optimizer and trained the operators. Ran the system for a while afterwards and confirmed readings were back within the normal range. Briefed the operators before leaving.
+
+Total time on site was about 15.0 hours, plus 7.8 hours of travel.
+Total cost for this visit (labour, travel and parts): SAR 42,400
+
+Please get in touch if anything comes up.

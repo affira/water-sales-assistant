@@ -1,0 +1,15 @@
+FSR-0003
+Cust: Pilbara Mine Water Pty Ltd
+Site: Port Hedland
+Date: 07/03/23
+Tech: T. Whitfield
+Equip: ClarionRO RO-1000 reverse osmosis skid
+
+Arr. site ~7:40, toolbox talk + permit took a while. permeate tube cracked at interconnector after a pressure surge on restart.
+Work: brine leak on vessel end cap - changed o-rings, retorqued, ok.
+Cal sensors ok. Forgot to log exact start/finish, sorry.
+
+Time: abt 5.4h on site, travel 11.0h total.
+Cost: as per agreement + travel (see last PO).
+
+-Tom
