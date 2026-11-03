@@ -57,7 +57,7 @@ Requires Python 3.9+ and an Anthropic API key.
 
 ```bash
 python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements-dev.txt    # runtime deps (requirements.txt) + test tools
 export ANTHROPIC_API_KEY=...            # never commit this
 
 python scripts/generate_data.py        # (optional) regenerate the synthetic data
@@ -88,6 +88,28 @@ python eval/eval_extraction.py         # field-level accuracy of extraction vs. 
 Try the prompts in [`eval/demo_prompts.md`](eval/demo_prompts.md).
 
 Configuration comes from environment variables, all listed with placeholder values in [`.env.example`](.env.example): `ANTHROPIC_API_KEY` (required), `AQUAASSIST_MODEL` (default `claude-opus-5-5`), `AQUAASSIST_EFFORT` (default `medium`), `AQUAASSIST_EXTRACTION_EFFORT` (default `low`). For local use, copy it to `.env` (gitignored), fill in your key, and load it with `set -a; source .env; set +a`.
+
+### Docker
+
+The image runs the API with uvicorn on port 8000 as a non-root user. It includes the code and the synthetic data. It contains no secrets: the API key and all settings come from environment variables at run time.
+
+```bash
+cp .env.example .env                  # then put your real ANTHROPIC_API_KEY in .env (gitignored)
+docker build -t water-sales-assistant .
+docker run --rm -p 8000:8000 --env-file .env -e LLM_PROVIDER=anthropic water-sales-assistant
+
+# in a second terminal
+curl http://localhost:8000/health
+curl -X POST http://localhost:8000/chat \
+  -H "Content-Type: application/json" \
+  -d '{"session_id": "demo", "message": "What does AquaTune do?"}'
+```
+
+Notes:
+- **Service-record index:** run `python -m aquaassist.ingest` before `docker build`, so cost estimates work. If `index/` doesn't exist, the image still builds and `/health` reports `"service_records_index": "missing"`.
+- **`LLM_PROVIDER`:** `anthropic` is the default backend. The variable is reserved for the planned multi-provider layer and is currently ignored.
+- **`/health`** shows `"llm_credentials": "missing"` (and `/chat` returns 500 `server_misconfigured`) if no key was passed in.
+- **For Azure:** build with `--platform linux/amd64` on Apple-silicon Macs, because Azure Container Apps runs amd64.
 
 ## Project layout
 

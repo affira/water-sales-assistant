@@ -13,7 +13,8 @@ from aquaassist.api import create_app
 
 
 @pytest.fixture
-def client() -> TestClient:
+def client(monkeypatch: pytest.MonkeyPatch) -> TestClient:
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-placeholder")  # the LLM itself is always mocked
     return TestClient(create_app())
 
 
@@ -30,7 +31,36 @@ def chat(client: TestClient, message: str, session_id: str = "s1") -> httpx.Resp
 def test_health_reports_index_status(client: TestClient, monkeypatch: pytest.MonkeyPatch, tmp_path) -> None:
     monkeypatch.setattr(config, "RECORDS_PATH", tmp_path / "missing.json")
     body = client.get("/health").json()
-    assert body == {"status": "ok", "service_records_index": "missing", "model": config.MODEL}
+    assert body == {"status": "ok", "service_records_index": "missing", "llm_credentials": "configured",
+                    "model": config.MODEL}
+
+
+def test_health_reports_missing_credentials_without_revealing_them(client: TestClient,
+                                                                   monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("ANTHROPIC_API_KEY")
+    response = client.get("/health")
+    assert response.status_code == 200
+    assert response.json()["llm_credentials"] == "missing"
+
+
+def test_chat_without_credentials_is_a_clear_server_error(client: TestClient,
+                                                          monkeypatch: pytest.MonkeyPatch) -> None:
+    calls = use_llm(monkeypatch, text_reply("never reached"))
+    monkeypatch.delenv("ANTHROPIC_API_KEY")
+    response = chat(client, "hello")
+    assert response.status_code == 500
+    assert response.json()["error"] == "server_misconfigured"
+    assert calls == []  # the LLM is not called
+
+
+def test_unexpected_errors_return_the_standard_error_shape(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-placeholder")
+    use_llm(monkeypatch, RuntimeError("bug with secret detail"))
+    client = TestClient(create_app(), raise_server_exceptions=False)
+    response = chat(client, "hello")
+    assert response.status_code == 500
+    assert response.json() == {"error": "internal_error", "message": "Something went wrong on the server.",
+                               "details": []}
 
 
 def test_chat_returns_reply_tools_and_verified_sources(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:

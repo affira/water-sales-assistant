@@ -13,6 +13,8 @@ python scripts/generate_data.py     # regenerate synthetic data (deterministic)
 python -m aquaassist.ingest         # extract reports into index/service_records.json (calls the API)
 python -m aquaassist.cli --trace    # interactive agent (calls the API)
 uvicorn aquaassist.api:app --port 8000   # HTTP API: POST /chat, GET /health, docs at /docs
+docker build -t water-sales-assistant .  # production image (runtime deps from requirements.txt only)
+pip install -r requirements-dev.txt      # local dev: runtime deps + pytest/httpx
 python eval/eval_extraction.py      # extraction accuracy vs. eval/ground_truth_service_records.json
 ```
 

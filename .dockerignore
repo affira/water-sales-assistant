@@ -1,0 +1,31 @@
+# Keep the build context small and secret-free. Only aquaassist/, data/, index/ and
+# requirements.txt are needed by the Dockerfile.
+
+# Secrets and local environments
+.env
+.env.*
+.venv/
+
+# Git and editor/OS files
+.git/
+.github/
+.gitignore
+.vscode/
+.idea/
+.DS_Store
+
+# Python caches
+__pycache__/
+**/__pycache__/
+*.pyc
+.pytest_cache/
+
+# Not needed at run time
+tests/
+eval/
+scripts/
+requirements-dev.txt
+Dockerfile
+.dockerignore
+# Root-level docs only (data/brochures/*.md are needed and are not matched by this pattern)
+*.md

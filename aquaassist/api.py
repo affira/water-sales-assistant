@@ -58,6 +58,7 @@ class ChatResponse(BaseModel):
 class HealthResponse(BaseModel):
     status: Literal["ok"]
     service_records_index: Literal["present", "missing"]
+    llm_credentials: Literal["configured", "missing"]
     model: str
 
 
@@ -123,15 +124,28 @@ def create_app(agent_factory: Callable[[], Agent] = Agent, max_sessions: int = 1
     def on_invalid_request(request: Request, exc: RequestValidationError) -> JSONResponse:
         return error_response(422, "invalid_request", "The request body is invalid.", _validation_details(exc))
 
+    @app.exception_handler(Exception)
+    def on_unexpected_error(request: Request, exc: Exception) -> JSONResponse:
+        logger.error("Unhandled %s on %s", type(exc).__name__, request.url.path)  # type only: no payloads
+        return error_response(500, "internal_error", "Something went wrong on the server.")
+
     @app.get("/health", response_model=HealthResponse)
     def health() -> HealthResponse:
-        index = "present" if config.RECORDS_PATH.exists() else "missing"
-        return HealthResponse(status="ok", service_records_index=index, model=config.MODEL)
+        return HealthResponse(
+            status="ok",
+            service_records_index="present" if config.RECORDS_PATH.exists() else "missing",
+            llm_credentials="configured" if config.llm_credentials_configured() else "missing",
+            model=config.MODEL,
+        )
 
     @app.post("/chat", response_model=ChatResponse,
               responses={422: {"model": ErrorResponse}, 429: {"model": ErrorResponse},
-                         502: {"model": ErrorResponse}, 503: {"model": ErrorResponse}})
+                         500: {"model": ErrorResponse}, 502: {"model": ErrorResponse},
+                         503: {"model": ErrorResponse}})
     def chat(request: ChatRequest) -> Union[ChatResponse, JSONResponse]:
+        if not config.llm_credentials_configured():
+            return error_response(500, "server_misconfigured",
+                                  "The server has no LLM credentials configured (set ANTHROPIC_API_KEY).")
         recorder = TurnRecorder()
         try:
             with store.session(request.session_id) as agent:
