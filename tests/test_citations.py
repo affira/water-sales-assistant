@@ -8,6 +8,16 @@ def test_finds_brochure_citations_in_order_without_duplicates() -> None:
     assert cited_brochure_pages(text) == [("aquatune-optimizer", 1), ("ultraguard-uf", 2)]
 
 
+def test_page_ranges_expand_to_each_page() -> None:
+    text = "See [aquatune-optimizer p.1–3] and [ultraguard-uf pp. 1-2]."
+    assert cited_brochure_pages(text) == [("aquatune-optimizer", 1), ("aquatune-optimizer", 2),
+                                          ("aquatune-optimizer", 3), ("ultraguard-uf", 1), ("ultraguard-uf", 2)]
+
+
+def test_implausible_ranges_keep_only_the_first_page() -> None:
+    assert cited_brochure_pages("[a-doc p.3–1] [b-doc p.1-999]") == [("a-doc", 3), ("b-doc", 1)]
+
+
 def test_finds_report_ids_without_duplicates() -> None:
     assert cited_report_ids("Based on FSR-0012, FSR-0003 and FSR-0012.") == ["FSR-0012", "FSR-0003"]
 

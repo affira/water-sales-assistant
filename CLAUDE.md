@@ -24,7 +24,9 @@ python eval/eval_extraction.py      # extraction accuracy vs. eval/ground_truth_
 - `aquaassist/api.py`: FastAPI service (`/chat`, `/health`); `sessions.py` holds per-session agents
   in memory; `citations.py` extracts and verifies cited sources
 - `aquaassist/tools.py`: tool schemas (the routing surface) and the `run_tool` dispatcher
-- `aquaassist/llm.py`: the only place the Anthropic client is created and called (`create()`)
+- `aquaassist/providers/`: the only place LLM SDK clients are created and called. `LLM_PROVIDER`
+  selects `anthropic` (default), `azure_openai` or `foundry_claude`; `base.py` defines the internal
+  message/tool-call format and `convert.py` is the single place that translates it to each SDK
 - `aquaassist/config.py`: environment variables, paths, FX rates, enums
 - `aquaassist/cost.py`, `process.py`, `retrieval.py`: deterministic engines behind the tools
 - `aquaassist/extraction.py`: LLM report extraction and the rule-based `validate()`
@@ -44,8 +46,9 @@ python eval/eval_extraction.py      # extraction accuracy vs. eval/ground_truth_
 
 ### Tests
 - Tests run offline with the mocked LLM and never call a real API.
-- Mock at `aquaassist.llm.create` (see `tests/test_agent_loop.py`). Never construct a real
-  `anthropic.Anthropic` client in tests, and never require `ANTHROPIC_API_KEY` to run them.
+- Use the fake SDK clients in `tests/fakes.py` (`scripted_provider(kind, ...)`), and test agent
+  behaviour on every provider (`PROVIDERS`). Never require a real key to run tests; an autouse
+  fixture in `tests/conftest.py` blocks all network access.
 - Tool and engine tests use the ground-truth records fixture, not `index/`.
 
 ### Secrets and configuration

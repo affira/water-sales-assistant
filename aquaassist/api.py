@@ -11,15 +11,15 @@ import logging
 from dataclasses import dataclass, field
 from typing import Any, Callable, Dict, List, Literal, Optional, Union
 
-import anthropic
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 
-from . import config
+from . import config, providers
 from .agent import Agent
 from .citations import extract_sources
+from .providers import ProviderError
 from .sessions import SessionStore
 
 logger = logging.getLogger("aquaassist.api")
@@ -58,6 +58,7 @@ class ChatResponse(BaseModel):
 class HealthResponse(BaseModel):
     status: Literal["ok"]
     service_records_index: Literal["present", "missing"]
+    llm_provider: str
     llm_credentials: Literal["configured", "missing"]
     model: str
 
@@ -95,15 +96,16 @@ def error_response(status: int, error: str, message: str, details: Optional[list
     return JSONResponse(status_code=status, content=body.model_dump())
 
 
-def upstream_error_response(exc: Exception) -> JSONResponse:
-    """Map LLM SDK errors to HTTP errors without exposing upstream messages or credentials."""
-    if isinstance(exc, anthropic.RateLimitError):
+def upstream_error_response(exc: ProviderError) -> JSONResponse:
+    """Map provider errors (any backend) to HTTP errors without exposing upstream messages or credentials."""
+    if exc.kind == "rate_limit":
         return error_response(429, "rate_limited", "The language model is rate-limited; retry shortly.")
-    if isinstance(exc, (anthropic.AuthenticationError, anthropic.PermissionDeniedError)):
+    if exc.kind == "auth":
         return error_response(502, "upstream_auth_failed",
                               "The language model rejected the server's credentials; check its configuration.")
-    if isinstance(exc, anthropic.APIStatusError):
-        return error_response(502, "upstream_error", f"The language model returned an error ({exc.status_code}).")
+    if exc.kind == "upstream":
+        status = f" ({exc.status})" if exc.status else ""
+        return error_response(502, "upstream_error", f"The language model returned an error{status}.")
     return error_response(503, "llm_unavailable", "The language model could not be reached; retry shortly.")
 
 
@@ -134,8 +136,9 @@ def create_app(agent_factory: Callable[[], Agent] = Agent, max_sessions: int = 1
         return HealthResponse(
             status="ok",
             service_records_index="present" if config.RECORDS_PATH.exists() else "missing",
-            llm_credentials="configured" if config.llm_credentials_configured() else "missing",
-            model=config.MODEL,
+            llm_provider=providers.selected_provider(),
+            llm_credentials="missing" if providers.configuration_problems() else "configured",
+            model=providers.model_name(),
         )
 
     @app.post("/chat", response_model=ChatResponse,
@@ -143,15 +146,16 @@ def create_app(agent_factory: Callable[[], Agent] = Agent, max_sessions: int = 1
                          500: {"model": ErrorResponse}, 502: {"model": ErrorResponse},
                          503: {"model": ErrorResponse}})
     def chat(request: ChatRequest) -> Union[ChatResponse, JSONResponse]:
-        if not config.llm_credentials_configured():
-            return error_response(500, "server_misconfigured",
-                                  "The server has no LLM credentials configured (set ANTHROPIC_API_KEY).")
+        problems = providers.configuration_problems()
+        if problems:  # names of missing variables only, never values
+            return error_response(500, "server_misconfigured", "The server's LLM provider is not configured.",
+                                  [{"field": "environment", "message": p} for p in problems])
         recorder = TurnRecorder()
         try:
             with store.session(request.session_id) as agent:
                 reply = agent.ask(request.message, recorder)
-        except (anthropic.APIStatusError, anthropic.APIConnectionError) as exc:
-            logger.warning("LLM call failed: %s", type(exc).__name__)  # type only: no upstream text or secrets
+        except ProviderError as exc:
+            logger.warning("LLM call failed: %s", exc)  # kind and status only: no upstream text or secrets
             return upstream_error_response(exc)
         sources = [SourceOut(**vars(s)) for s in extract_sources(reply, recorder.outputs)]
         return ChatResponse(session_id=request.session_id, reply=reply, sources=sources,

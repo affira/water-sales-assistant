@@ -19,7 +19,8 @@ For each message it decides which of these to do, whether it needs a clarifying 
 user message
     │
     ▼
-Claude (claude-opus-5-5) + 6 tools ── manual tool-use loop (aquaassist/agent.py)
+LLM + 6 tools ── manual tool-use loop (aquaassist/agent.py)
+    │   LLM_PROVIDER: anthropic (Claude, default) | azure_openai | foundry_claude (Claude on Microsoft Foundry)
     │
     ├─ list_products / search_product_docs ─► BM25 over brochure pages ─────► cites [doc p.N]
     ├─ estimate_service_cost / find_service_reports / get_service_report
@@ -87,7 +88,24 @@ python eval/eval_extraction.py         # field-level accuracy of extraction vs. 
 
 Try the prompts in [`eval/demo_prompts.md`](eval/demo_prompts.md).
 
-Configuration comes from environment variables, all listed with placeholder values in [`.env.example`](.env.example): `ANTHROPIC_API_KEY` (required), `AQUAASSIST_MODEL` (default `claude-opus-5-5`), `AQUAASSIST_EFFORT` (default `medium`), `AQUAASSIST_EXTRACTION_EFFORT` (default `low`). For local use, copy it to `.env` (gitignored), fill in your key, and load it with `set -a; source .env; set +a`.
+Configuration comes from environment variables, all listed with placeholder values in [`.env.example`](.env.example). For local use, copy it to `.env` (gitignored), fill in your settings, and load it with `set -a; source .env; set +a`.
+
+### LLM providers
+
+`LLM_PROVIDER` picks the backend. The agent, the tools and the deterministic calculations are identical on all three.
+
+| `LLM_PROVIDER` | Backend | Required variables |
+|---|---|---|
+| `anthropic` (default) | Anthropic API, Anthropic SDK | `ANTHROPIC_API_KEY` (optional: `AQUAASSIST_MODEL`) |
+| `azure_openai` | Azure OpenAI deployment in Microsoft Foundry, `openai` SDK, Chat Completions | `AZURE_OPENAI_ENDPOINT`, `AZURE_OPENAI_DEPLOYMENT`, `AZURE_OPENAI_API_KEY` (optional: `AZURE_OPENAI_API_VERSION`, default `v1`) |
+| `foundry_claude` | Claude deployment in Microsoft Foundry, `AnthropicFoundry` client | `ANTHROPIC_FOUNDRY_BASE_URL` (`https://<resource>.services.ai.azure.com/anthropic`), `ANTHROPIC_FOUNDRY_API_KEY` (optional: `FOUNDRY_CLAUDE_DEPLOYMENT`) |
+
+How it fits together:
+- **Internal format:** the agent works only with provider-neutral messages and tool calls (`aquaassist/providers/base.py`).
+- **Translation:** `aquaassist/providers/convert.py` is the single place that converts that format to and from Anthropic tool use and OpenAI function calling.
+- **Azure OpenAI client:** it uses the recommended v1 API, the plain `OpenAI()` client with `base_url=<endpoint>/openai/v1/` and no api-version. Setting a dated `AZURE_OPENAI_API_VERSION` switches to the older `AzureOpenAI()` client.
+- **Ingest** works on every provider through structured JSON output.
+- **Server-side refusal fallback** is used on the Anthropic API only, because Foundry doesn't support it.
 
 ### Docker
 
@@ -107,7 +125,7 @@ curl -X POST http://localhost:8000/chat \
 
 Notes:
 - **Service-record index:** run `python -m aquaassist.ingest` before `docker build`, so cost estimates work. If `index/` doesn't exist, the image still builds and `/health` reports `"service_records_index": "missing"`.
-- **`LLM_PROVIDER`:** `anthropic` is the default backend. The variable is reserved for the planned multi-provider layer and is currently ignored.
+- **`LLM_PROVIDER`:** `-e LLM_PROVIDER=...` overrides the value in `.env`. Leave it out to use whatever `.env` sets (see LLM providers).
 - **`/health`** shows `"llm_credentials": "missing"` (and `/chat` returns 500 `server_misconfigured`) if no key was passed in.
 - **For Azure:** build with `--platform linux/amd64` on Apple-silicon Macs, because Azure Container Apps runs amd64.
 
@@ -121,7 +139,8 @@ aquaassist/
   extraction.py   report -> JSON record (Claude) + validation rules (Python)
   cost.py         service cost estimator
   process.py      RO process data analysis
-  llm.py          SDK wrapper (model, refusal fallback, safe history replay)
+  providers/      LLM backends: base.py (internal format), convert.py (format translation),
+                  anthropic_api.py (Anthropic API + Foundry Claude), azure_openai.py
   api.py          FastAPI service: /chat and /health
   sessions.py     in-memory per-session agents
   citations.py    extract and verify the sources cited in a reply

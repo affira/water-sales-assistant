@@ -1,15 +1,17 @@
-"""The sales assistant: a manual tool-use loop around Claude.
+"""The sales assistant: a manual tool-use loop around an LLM provider.
 
-A hand-written loop (rather than the SDK's beta tool runner) keeps every step visible:
-each model turn either answers, asks the user something, or requests tools; we run the
-tools, append the results and go again, up to MAX_AGENT_STEPS.
+A hand-written loop (rather than an SDK tool runner) keeps every step visible: each model
+turn either answers, asks the user something, or requests tools; we run the tools, append
+the results and go again, up to MAX_AGENT_STEPS. The loop only uses the provider-neutral
+types from `providers`, so it works the same on every backend.
 """
 from __future__ import annotations
 
 import json
-from typing import Callable
+from typing import Callable, List, Optional
 
-from . import config, llm
+from . import config
+from .providers import Message, Provider, ToolCall, ToolResult, ToolResults, UserText, get_provider
 from .tools import TOOLS, run_tool
 
 SYSTEM_PROMPT = """You are the sales assistant for Norvale Water Technologies, supporting a salesperson \
@@ -42,65 +44,58 @@ you can proceed without; instead state the assumption you made.
 information."""
 
 
+Emit = Callable[[str, dict], None]
+
+
 class Agent:
-    def __init__(self, show_thinking: bool = False):
-        self.messages: list[dict] = []
-        self.thinking = {"type": "adaptive", "display": "summarized" if show_thinking else "omitted"}
+    def __init__(self, show_thinking: bool = False, provider: Optional[Provider] = None):
+        self.provider = provider if provider is not None else get_provider()
+        self.show_thinking = show_thinking
+        self.messages: List[Message] = []
 
     def reset(self) -> None:
         self.messages = []
 
-    def ask(self, user_text: str, on_event: Callable[[str, dict], None] | None = None) -> str:
+    def ask(self, user_text: str, on_event: Optional[Emit] = None) -> str:
         """Run one user turn to completion and return the assistant's final text."""
         emit = on_event or (lambda kind, data: None)
         turn_start = len(self.messages)
-        self.messages.append({"role": "user", "content": user_text})
+        self.messages.append(UserText(user_text))
         try:
             return self._run_turn(turn_start, emit)
         except Exception:
             del self.messages[turn_start:]  # an API error mid-turn must not leave a half-finished history
             raise
 
-    def _run_turn(self, turn_start: int, emit: Callable[[str, dict], None]) -> str:
+    def _run_turn(self, turn_start: int, emit: Emit) -> str:
         for _ in range(config.MAX_AGENT_STEPS):
-            response = llm.create(
-                max_tokens=16000,
-                system=SYSTEM_PROMPT,
-                tools=TOOLS,
-                thinking=self.thinking,
-                output_config={"effort": config.AGENT_EFFORT},
-                cache_control={"type": "ephemeral"},  # system prompt + tools are a stable prefix
-                messages=self.messages,
-            )
-            if response.stop_reason == "refusal":
+            response = self.provider.complete(SYSTEM_PROMPT, self.messages, TOOLS, self.show_thinking)
+            if response.stop == "refusal":
                 del self.messages[turn_start:]  # drop the whole turn so history stays valid
                 return "Sorry, I can't help with that request."
 
-            content = llm.replayable_content(response.content)
-            for block in content:
-                if block.type == "thinking" and block.thinking:
-                    emit("thinking", {"text": block.thinking})
-            self.messages.append({"role": "assistant", "content": content})
+            for text in response.thinking:
+                emit("thinking", {"text": text})
+            self.messages.append(response.assistant)
 
-            if response.stop_reason == "pause_turn":
+            if response.stop == "pause":
                 continue
-            tool_calls = [b for b in content if b.type == "tool_use"]
-            if response.stop_reason != "tool_use" or not tool_calls:
-                text = "\n".join(b.text for b in content if b.type == "text").strip()
-                if response.stop_reason == "max_tokens":
+            if response.stop != "tool_use" or not response.tool_calls:
+                text = response.text
+                if response.stop == "max_tokens":
                     text += "\n\n[Answer cut off: output limit reached.]"
                 return text
 
-            results = []
-            for call in tool_calls:
-                emit("tool_call", {"name": call.name, "input": call.input})
-                try:
-                    output, is_error = run_tool(call.name, call.input), False
-                except Exception as exc:  # report tool failures to the model instead of crashing
-                    output, is_error = json.dumps({"error": f"{type(exc).__name__}: {exc}"}), True
-                emit("tool_result", {"name": call.name, "output": output, "is_error": is_error})
-                results.append({"type": "tool_result", "tool_use_id": call.id, "content": output,
-                                "is_error": is_error})
-            self.messages.append({"role": "user", "content": results})
+            self.messages.append(ToolResults([self._run_tool_call(call, emit) for call in response.tool_calls]))
 
         return "I couldn't finish this within the step limit. Could you narrow the question?"
+
+    @staticmethod
+    def _run_tool_call(call: ToolCall, emit: Emit) -> ToolResult:
+        emit("tool_call", {"name": call.name, "input": call.arguments})
+        try:
+            output, is_error = run_tool(call.name, call.arguments), False
+        except Exception as exc:  # report tool failures to the model instead of crashing
+            output, is_error = json.dumps({"error": f"{type(exc).__name__}: {exc}"}), True
+        emit("tool_result", {"name": call.name, "output": output, "is_error": is_error})
+        return ToolResult(call.id, output, is_error)

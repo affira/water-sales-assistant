@@ -11,7 +11,8 @@ from dataclasses import dataclass
 from typing import Iterable, Optional
 
 _BRACKET = re.compile(r"\[([^\[\]]+)\]")
-_DOC_PAGE = re.compile(r"\b([a-z0-9][a-z0-9-]*[a-z0-9])\s+p\.?\s*(\d+)\b")
+_DOC_PAGE = re.compile(r"\b([a-z0-9][a-z0-9-]*[a-z0-9])\s+pp?\.?\s*(\d+)(?:\s*[–—-]\s*(\d+))?\b")
+_MAX_RANGE = 20  # brochures are short; a bigger "range" is more likely a typo than a citation
 _REPORT_ID = re.compile(r"\bFSR-\d{4}\b")
 
 
@@ -23,13 +24,20 @@ class Source:
     verified: bool
 
 
+def _pages(first: str, last: str) -> range:
+    start = int(first)
+    end = int(last) if last and start <= int(last) <= start + _MAX_RANGE else start
+    return range(start, end + 1)
+
+
 def cited_brochure_pages(text: str) -> list[tuple[str, int]]:
-    """`[doc_id p.N]` citations in order of first appearance, without duplicates."""
+    """`[doc_id p.N]` (or `p.N–M`) citations in order of first appearance, without duplicates."""
     found: list[tuple[str, int]] = []
     for bracket in _BRACKET.findall(text):
-        for doc_id, page in _DOC_PAGE.findall(bracket):
-            if (doc_id, int(page)) not in found:
-                found.append((doc_id, int(page)))
+        for doc_id, first, last in _DOC_PAGE.findall(bracket):
+            for page in _pages(first, last):
+                if (doc_id, page) not in found:
+                    found.append((doc_id, page))
     return found
 
 

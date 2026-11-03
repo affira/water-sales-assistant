@@ -10,10 +10,9 @@ import argparse
 import json
 import sys
 
-import anthropic
-
 from . import config
 from .agent import Agent
+from .providers import ProviderConfigError, ProviderError
 
 DIM, CYAN, RESET = "\033[2m", "\033[36m", "\033[0m"
 
@@ -41,24 +40,28 @@ def main() -> None:
     if not config.RECORDS_PATH.exists():
         sys.exit("Service records not built yet. Run: python -m aquaassist.ingest")
 
-    agent = Agent(show_thinking=args.trace)
+    try:
+        agent = Agent(show_thinking=args.trace)
+    except ProviderConfigError as exc:
+        sys.exit(f"LLM provider not configured: {exc}. See .env.example.")
     tracer = make_tracer(args.trace)
 
     def answer(text: str) -> None:
         try:
             print(f"\nAssistant: {agent.ask(text, tracer)}\n")
-        except anthropic.AuthenticationError:
-            sys.exit("Authentication failed: set ANTHROPIC_API_KEY.")
-        except anthropic.APIConnectionError:
-            print("Network error reaching the API; try again.")
-        except anthropic.APIStatusError as exc:
-            print(f"API error {exc.status_code}: {exc.message}")
+        except ProviderError as exc:
+            if exc.kind == "auth":
+                sys.exit(f"Authentication failed for provider '{agent.provider.name}': check its API key.")
+            if exc.kind == "unavailable":
+                print("Network error reaching the model; try again.")
+            else:
+                print(f"Model error ({exc.kind}{f', {exc.status}' if exc.status else ''}); try again.")
 
     if args.once:
         answer(args.once)
         return
 
-    print(f"Norvale sales assistant ({config.MODEL}). Commands: /reset, /quit\n")
+    print(f"Norvale sales assistant ({agent.provider.name}: {agent.provider.model}). Commands: /reset, /quit\n")
     while True:
         try:
             text = input("You: ").strip()

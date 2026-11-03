@@ -18,11 +18,6 @@ AGENT_EFFORT = os.environ.get("AQUAASSIST_EFFORT", "medium")
 EXTRACTION_EFFORT = os.environ.get("AQUAASSIST_EXTRACTION_EFFORT", "low")
 MAX_AGENT_STEPS = 10
 
-
-def llm_credentials_configured() -> bool:
-    """Whether an Anthropic API key is set. Only presence is checked; the value is never read out."""
-    return bool(os.environ.get("ANTHROPIC_API_KEY", "").strip())
-
 # Fixed exchange rates (USD per 1 unit). A deliberate, visible assumption: the
 # assistant reports these alongside any converted figure instead of hiding them.
 FX_TO_USD = {
