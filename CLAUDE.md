@@ -12,12 +12,15 @@ pytest -q                           # offline test suite, must pass before every
 python scripts/generate_data.py     # regenerate synthetic data (deterministic)
 python -m aquaassist.ingest         # extract reports into index/service_records.json (calls the API)
 python -m aquaassist.cli --trace    # interactive agent (calls the API)
+uvicorn aquaassist.api:app --port 8000   # HTTP API: POST /chat, GET /health, docs at /docs
 python eval/eval_extraction.py      # extraction accuracy vs. eval/ground_truth_service_records.json
 ```
 
 ## Where things live
 
 - `aquaassist/agent.py`: system prompt and the manual tool-use loop (`Agent.ask`)
+- `aquaassist/api.py`: FastAPI service (`/chat`, `/health`); `sessions.py` holds per-session agents
+  in memory; `citations.py` extracts and verifies cited sources
 - `aquaassist/tools.py`: tool schemas (the routing surface) and the `run_tool` dispatcher
 - `aquaassist/llm.py`: the only place the Anthropic client is created and called (`create()`)
 - `aquaassist/config.py`: environment variables, paths, FX rates, enums

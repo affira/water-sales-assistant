@@ -55,7 +55,13 @@ class Agent:
         emit = on_event or (lambda kind, data: None)
         turn_start = len(self.messages)
         self.messages.append({"role": "user", "content": user_text})
+        try:
+            return self._run_turn(turn_start, emit)
+        except Exception:
+            del self.messages[turn_start:]  # an API error mid-turn must not leave a half-finished history
+            raise
 
+    def _run_turn(self, turn_start: int, emit: Callable[[str, dict], None]) -> str:
         for _ in range(config.MAX_AGENT_STEPS):
             response = llm.create(
                 max_tokens=16000,

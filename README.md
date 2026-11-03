@@ -65,6 +65,19 @@ python -m aquaassist.ingest            # extract the 50 reports into index/servi
 python -m aquaassist.cli --trace       # chat; --trace shows tool calls and reasoning summaries
 ```
 
+### HTTP API
+
+```bash
+uvicorn aquaassist.api:app --host 0.0.0.0 --port 8000   # interactive docs at http://localhost:8000/docs
+```
+
+- `POST /chat` takes `{"session_id": "abc", "message": "..."}` and returns `{"session_id", "reply", "sources", "tools_used"}`.
+  - `sources` lists the brochure pages and service reports cited in the reply. Each has `verified: true` only if a tool actually returned it during that turn.
+  - Invalid input returns 422 `{"error": "invalid_request", "message", "details": [{"field", "message"}]}`.
+  - LLM failures return 429, 502 or 503 with the same shape, never echoing upstream error text.
+- `GET /health` is for container health probes. It never calls the LLM and reports whether the service-record index is present.
+- Conversation state is kept per session **in memory** (`aquaassist/sessions.py`). That works for one container, but production needs a shared store such as Redis or Cosmos DB, since sessions are lost on restart and aren't shared between replicas.
+
 Other commands:
 
 ```bash
@@ -87,6 +100,9 @@ aquaassist/
   cost.py         service cost estimator
   process.py      RO process data analysis
   llm.py          SDK wrapper (model, refusal fallback, safe history replay)
+  api.py          FastAPI service: /chat and /health
+  sessions.py     in-memory per-session agents
+  citations.py    extract and verify the sources cited in a reply
   cli.py, ingest.py, config.py
 data/             synthetic brochures, service reports, hourly plant CSV
 scripts/          data generator

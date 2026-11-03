@@ -44,6 +44,18 @@ def test_tool_error_is_reported_to_model(monkeypatch):
     assert calls[1]["messages"][-1]["content"][0]["is_error"] is True
 
 
+def test_api_error_rolls_back_turn(monkeypatch):
+    def create(**kwargs):
+        raise RuntimeError("network down")
+    monkeypatch.setattr(agent_module.llm, "create", create)
+    a = agent_module.Agent()
+    try:
+        a.ask("something")
+    except RuntimeError:
+        pass
+    assert a.messages == []
+
+
 def test_refusal_rolls_back_turn(monkeypatch):
     create, _ = fake_responses(NS(stop_reason="refusal", content=[]))
     monkeypatch.setattr(agent_module.llm, "create", create)
