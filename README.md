@@ -74,7 +74,7 @@ python eval/eval_extraction.py         # field-level accuracy of extraction vs. 
 
 Try the prompts in [`eval/demo_prompts.md`](eval/demo_prompts.md).
 
-Configuration via environment variables: `AQUAASSIST_MODEL` (default `claude-opus-5-5`), `AQUAASSIST_EFFORT` (default `medium`), `AQUAASSIST_EXTRACTION_EFFORT` (default `low`).
+Configuration comes from environment variables, all listed with placeholder values in [`.env.example`](.env.example): `ANTHROPIC_API_KEY` (required), `AQUAASSIST_MODEL` (default `claude-opus-5-5`), `AQUAASSIST_EFFORT` (default `medium`), `AQUAASSIST_EXTRACTION_EFFORT` (default `low`). For local use, copy it to `.env` (gitignored), fill in your key, and load it with `set -a; source .env; set +a`.
 
 ## Project layout
 
