@@ -11,7 +11,10 @@ from dataclasses import dataclass
 from typing import Iterable, Optional
 
 _BRACKET = re.compile(r"\[([^\[\]]+)\]")
-_DOC_PAGE = re.compile(r"\b([a-z0-9][a-z0-9-]*[a-z0-9])\s+pp?\.?\s*(\d+)(?:\s*[–—-]\s*(\d+))?\b")
+# doc ids start with a letter; models sometimes add the edition year ("clarion-ro-series 2025 p.1"),
+# which is skipped rather than mistaken for the document name.
+_DOC_PAGE = re.compile(r"\b([a-z][a-z0-9-]*[a-z0-9])(?:\s+(?:19|20)\d{2})?\s+pp?\.?\s*(\d+)(?:\s*[–—-]\s*(\d+))?\b")
+_BARE_PAGE = re.compile(r"pp?\.?\s*(\d+)(?:\s*[–—-]\s*(\d+))?")
 _MAX_RANGE = 20  # brochures are short; a bigger "range" is more likely a typo than a citation
 _REPORT_ID = re.compile(r"\bFSR-\d{4}\b")
 
@@ -30,14 +33,27 @@ def _pages(first: str, last: str) -> range:
     return range(start, end + 1)
 
 
+def _segment_pages(segment: str, previous_doc: Optional[str]) -> list[tuple[str, str, str]]:
+    """(doc_id, first, last) in one `;`-separated part of a bracket. A bare `p.N` belongs to the
+    document named just before it in the same bracket: `[aquatune-optimizer p.1; p.2]`."""
+    named = _DOC_PAGE.findall(segment)
+    if named or previous_doc is None:
+        return named
+    bare = _BARE_PAGE.fullmatch(segment.strip())
+    return [(previous_doc, bare.group(1), bare.group(2))] if bare else []
+
+
 def cited_brochure_pages(text: str) -> list[tuple[str, int]]:
     """`[doc_id p.N]` (or `p.N–M`) citations in order of first appearance, without duplicates."""
     found: list[tuple[str, int]] = []
     for bracket in _BRACKET.findall(text):
-        for doc_id, first, last in _DOC_PAGE.findall(bracket):
-            for page in _pages(first, last):
-                if (doc_id, page) not in found:
-                    found.append((doc_id, page))
+        previous_doc: Optional[str] = None
+        for segment in bracket.split(";"):
+            for doc_id, first, last in _segment_pages(segment, previous_doc):
+                previous_doc = doc_id
+                for page in _pages(first, last):
+                    if (doc_id, page) not in found:
+                        found.append((doc_id, page))
     return found
 
 

@@ -14,6 +14,17 @@ def test_page_ranges_expand_to_each_page() -> None:
                                           ("aquatune-optimizer", 3), ("ultraguard-uf", 1), ("ultraguard-uf", 2)]
 
 
+def test_edition_year_between_doc_and_page_is_not_a_document() -> None:
+    text = "See [aquatune-optimizer p.1; clarion-ro-series 2025 p.1] and [clarion-ro-series 2025 p.2]."
+    assert cited_brochure_pages(text) == [("aquatune-optimizer", 1), ("clarion-ro-series", 1),
+                                          ("clarion-ro-series", 2)]
+
+
+def test_bare_page_after_semicolon_belongs_to_previous_document() -> None:
+    text = "See [aquatune-optimizer p.1; p.2] but not a lone [p.5]."
+    assert cited_brochure_pages(text) == [("aquatune-optimizer", 1), ("aquatune-optimizer", 2)]
+
+
 def test_implausible_ranges_keep_only_the_first_page() -> None:
     assert cited_brochure_pages("[a-doc p.3–1] [b-doc p.1-999]") == [("a-doc", 3), ("b-doc", 1)]
 
