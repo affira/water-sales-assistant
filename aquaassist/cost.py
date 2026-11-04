@@ -20,6 +20,7 @@ from typing import Iterable
 import numpy as np
 
 from . import config
+from .countries import same_country
 
 USABLE_COST = ("itemized", "truncated")
 
@@ -44,7 +45,7 @@ def _spread(values: Iterable[float]) -> dict | None:
 
 
 def _country_match(record: dict, country: str | None) -> bool:
-    return bool(country) and record.get("country", "").strip().lower() == country.strip().lower()
+    return same_country(record.get("country"), country)
 
 
 def _travel_ok(r: dict) -> bool:

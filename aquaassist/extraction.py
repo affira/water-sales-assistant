@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Optional
 
 from . import config
+from .countries import harmonize_countries
 from .providers import Provider, get_provider
 
 
@@ -144,6 +145,6 @@ def extract_all(force: bool = False, workers: int = 4, provider: Optional[Provid
             cached[rec["source_file"]] = rec
             print(f"  extracted {rec['report_id']}: {rec['equipment_family']} / {rec['task_type']}"
                   + (f"  [{'; '.join(rec['checks'])}]" if rec["checks"] else ""))
-    records = [cached[p.name] for p in paths]
+    records = harmonize_countries([cached[p.name] for p in paths])
     config.RECORDS_PATH.write_text(json.dumps(records, indent=2))
     return records

@@ -14,6 +14,11 @@ FIELDS = ["country", "equipment_family", "task_type", "main_quantity", "onsite_h
           "labour_rate", "travel_rate"]
 
 
+def applies(field: str, truth: dict) -> bool:
+    """Currency is only knowable when the report states a cost; "invoice to follow" notes name none."""
+    return not (field == "currency" and truth["cost_status"] == "not_stated")
+
+
 def same(field, got, want) -> bool:
     if want is None or got is None:
         return want is got
@@ -30,14 +35,18 @@ def main() -> None:
     misses = []
     print(f"{'field':28} accuracy")
     for f in FIELDS:
-        ok = 0
+        ok = scored = 0
         for rid, t in truth.items():
+            if not applies(f, t):
+                continue
+            scored += 1
             g = got.get(rid, {})
             if same(f, g.get(f), t.get(f)):
                 ok += 1
             else:
                 misses.append((rid, f, g.get(f), t.get(f)))
-        print(f"{f:28} {ok}/{len(truth)}")
+        note = f"  ({len(truth) - scored} n/a)" if scored < len(truth) else ""
+        print(f"{f:28} {ok}/{scored}{note}")
     if misses:
         print("\nMismatches (report, field, extracted, truth):")
         for m in misses:
