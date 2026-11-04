@@ -25,3 +25,8 @@ output "resource_group_name" {
 output "container_app_name" {
   value = azurerm_container_app.app.name
 }
+
+output "pipeline_identity_name" {
+  description = "Managed identity to select when creating the Azure DevOps service connection."
+  value       = azurerm_user_assigned_identity.pipeline.name
+}

@@ -102,6 +102,27 @@ resource "azurerm_role_assignment" "app_kv_secrets_user" {
   principal_type       = "ServicePrincipal"
 }
 
+# --- identity used by the Azure DevOps pipeline -----------------------------------------------
+# The Azure DevOps service connection signs in as this identity via workload identity federation
+# (Azure DevOps adds the federated credential when the connection is created). A managed identity
+# is used because creating Entra app registrations is often blocked in university/company tenants.
+# Contributor on this resource group only: enough to push images to the registry and update the
+# container app; it cannot read Key Vault secret values (data access is a separate RBAC role).
+
+resource "azurerm_user_assigned_identity" "pipeline" {
+  name                = "${var.prefix}-pipeline-identity"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  tags                = local.tags
+}
+
+resource "azurerm_role_assignment" "pipeline_contributor" {
+  scope                = azurerm_resource_group.rg.id
+  role_definition_name = "Contributor"
+  principal_id         = azurerm_user_assigned_identity.pipeline.principal_id
+  principal_type       = "ServicePrincipal"
+}
+
 # --- container apps --------------------------------------------------------------------------
 
 resource "azurerm_container_app_environment" "env" {

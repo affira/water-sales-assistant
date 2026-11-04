@@ -277,7 +277,7 @@ curl "$(terraform output -raw app_url)/health"
 - **GitHub Actions** ([`ci.yml`](.github/workflows/ci.yml)): `ruff` and `pytest` on every push and pull request. No secrets involved.
 - **Azure DevOps** ([`azure-pipelines.yml`](azure-pipelines.yml)): Lint → Test → Build & push image (tagged with the build ID) → Deploy to the container app with a `/health` check.
   - Build and Deploy run only for pushes to `main`.
-  - **Setup:** an Azure Resource Manager service connection (named in the `azureServiceConnection` variable; Contributor on the resource group), plus the pipeline variables `acrName`, `resourceGroupName` and `containerAppName` from `terraform output`.
+  - **Setup:** an Azure Resource Manager service connection, named in the `azureServiceConnection` variable. It uses **workload identity federation with a managed identity** (`norvale-pipeline-identity`, created by Terraform, with Contributor on the resource group only), so there's no secret and no Entra app registration is needed. The pipeline also needs the variables `acrName`, `resourceGroupName` and `containerAppName` from `terraform output`.
   - **After a pipeline deploy,** set Terraform's `container_image` to the deployed tag before the next `terraform apply`. See [`infra/README.md`](infra/README.md).
 
 > 📸 **Screenshot placeholder:** `docs/screenshots/azure-devops-pipeline.png` (pipeline run with the four stages)

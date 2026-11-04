@@ -9,6 +9,7 @@ This deploys the sales assistant API to Azure Container Apps. All data in the pr
 | Container Registry (Basic) | Stores the Docker image |
 | Key Vault (RBAC) | API keys. **Terraform holds no secret values**; you add them with the Azure CLI. You get *Key Vault Secrets Officer* |
 | User-assigned managed identity | The app's identity: *AcrPull* on the registry, *Key Vault Secrets User* on the vault |
+| Pipeline managed identity | Identity for the Azure DevOps service connection: *Contributor* on the resource group only (can push images and update the app, **can't** read Key Vault secrets) |
 | Container Apps environment + app | Consumption plan, 0.25 vCPU / 0.5 GiB, **scales to zero**, max 1 replica (sessions are in memory) |
 
 The app gets these environment variables:
@@ -86,6 +87,24 @@ terraform destroy -var container_image=water-sales-assistant:v1
 ```
 
 This deletes everything Terraform created, including the images in the registry. The Key Vault is purged, so the same names can be reused. Your Azure OpenAI resource in `rg-water-sales-assistant` isn't managed by Terraform and stays.
+
+## Azure DevOps service connection
+
+The Azure DevOps service connection signs in as the pipeline managed identity, using workload identity federation, so no secret is stored anywhere. The usual "App registration (automatic)" option is often blocked in university and company directories ("Insufficient privileges to create an app in Microsoft Entra"). Use the managed identity instead:
+
+1. Run `terraform apply` (it creates `norvale-pipeline-identity`).
+2. In Azure DevOps, go to **Project settings → Service connections → New → Azure Resource Manager**, and fill in:
+
+   | Field | Value |
+   |---|---|
+   | Identity type | **Managed identity** |
+   | Subscription / resource group for the managed identity | your subscription / `norvale-rg` |
+   | Managed identity | `norvale-pipeline-identity` (`terraform output -raw pipeline_identity_name`) |
+   | Scope | Subscription; resource group `norvale-rg` |
+   | Name | `water-sales-assistant-azure`, the same as `azureServiceConnection` in `azure-pipelines.yml` |
+   | Security | Grant access permission to all pipelines |
+
+3. Save. Azure DevOps adds the federated credential to the identity.
 
 ## Files
 
