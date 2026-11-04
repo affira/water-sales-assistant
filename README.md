@@ -171,6 +171,7 @@ data/             synthetic brochures, service reports, hourly plant CSV
 scripts/          data generator
 eval/             ground truth, extraction eval, demo prompts
 tests/            offline tests
+infra/            Terraform for Azure (Container Apps, ACR, Key Vault, App Insights); see infra/README.md
 ```
 
 ## Limitations
