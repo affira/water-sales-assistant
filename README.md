@@ -263,9 +263,15 @@ terraform apply -var container_image=water-sales-assistant:v1
 curl "$(terraform output -raw app_url)/health"
 ```
 
-> 📸 **Screenshot placeholder:** `docs/screenshots/azure-container-app.png` (Container App overview in the Azure portal)
->
-> 📸 **Screenshot placeholder:** `docs/screenshots/app-insights.png` (Application Insights: request latency and `aquaassist.llm.tokens`)
+![The container app running on Azure Container Apps in Norway East](docs/screenshots/azure-container-app.png)
+
+*The deployed container app (URL and subscription ID redacted).*
+
+![Application Insights: one row per /chat request with tools, status, seconds, LLM calls and token counts](docs/screenshots/app-insights.png)
+
+*Application Insights, using the per-request query above. The last row is from before the attribute fix, when tool names were stored as tuple text and the status was dropped.*
+
+![Application Insights chart of request duration by tool](docs/screenshots/app-insights-chart.png)
 
 ### CI/CD
 - **GitHub Actions** ([`ci.yml`](.github/workflows/ci.yml)): `ruff` and `pytest` on every push and pull request. No secrets involved.
