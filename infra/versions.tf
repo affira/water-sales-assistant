@@ -16,6 +16,11 @@ terraform {
 # The subscription comes from ARM_SUBSCRIPTION_ID (see infra/README.md); authentication from `az login`.
 provider "azurerm" {
   features {
+    resource_group {
+      # The resource group is dedicated to this stack, and Azure adds resources to it automatically
+      # (e.g. the "Application Insights Smart Detection" action group), which otherwise block destroy.
+      prevent_deletion_if_contains_resources = false
+    }
     key_vault {
       # Destroy removes the vault completely, so the stack can be recreated with the same name.
       purge_soft_delete_on_destroy    = true
