@@ -1,0 +1,9 @@
+# Copy to terraform.tfvars (gitignored) and adjust. No secrets belong here.
+prefix                  = "norvale"
+location                = "norwayeast"
+llm_provider            = "azure_openai"
+azure_openai_endpoint   = "https://your-resource.openai.azure.com"
+azure_openai_deployment = "gpt-5-mini"
+
+# Leave empty for the first apply; set after pushing an image, e.g. "water-sales-assistant:v1".
+container_image = ""

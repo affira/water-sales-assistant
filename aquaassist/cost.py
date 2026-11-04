@@ -20,6 +20,7 @@ from typing import Iterable
 import numpy as np
 
 from . import config
+from .countries import same_country
 
 USABLE_COST = ("itemized", "truncated")
 
@@ -44,7 +45,7 @@ def _spread(values: Iterable[float]) -> dict | None:
 
 
 def _country_match(record: dict, country: str | None) -> bool:
-    return bool(country) and record.get("country", "").strip().lower() == country.strip().lower()
+    return same_country(record.get("country"), country)
 
 
 def _travel_ok(r: dict) -> bool:
@@ -97,7 +98,8 @@ def estimate(equipment_family: str, task_type: str, quantity: int | None = None,
         hours_method = (f"linear fit over {len(points)} visits: {intercept:.1f} h + {slope:.2f} h per unit "
                         f"(quantities seen {int(qs.min())}-{int(qs.max())})")
         if quantity > qs.max() or quantity < qs.min():
-            caveats.append(f"Requested quantity {quantity} is outside the range seen ({int(qs.min())}-{int(qs.max())}); "
+            seen = f"{int(qs.min())}-{int(qs.max())}"
+            caveats.append(f"Requested quantity {quantity} is outside the range seen ({seen}); "
                            "hours are extrapolated.")
     else:
         hours = _spread(r.get("onsite_hours") for r in similar)
@@ -135,7 +137,8 @@ def estimate(equipment_family: str, task_type: str, quantity: int | None = None,
 
     labour_rate, labour_ids, labour_local = rate_spread("labour_rate")
     travel_rate, travel_rate_ids, _ = rate_spread("travel_rate")
-    rate_basis = f"itemized reports in {country}" if labour_local else "all itemized reports (no rates on file for this country)"
+    rate_basis = (f"itemized reports in {country}" if labour_local
+                  else "all itemized reports (no rates on file for this country)")
     if not labour_local:
         caveats.append("No itemized rates on file for this country; using rates from other countries, "
                        "which vary widely (check the local rate card).")
@@ -149,7 +152,8 @@ def estimate(equipment_family: str, task_type: str, quantity: int | None = None,
             if li.get("unit_price"):
                 unit_prices.append(to_usd(li["unit_price"], r["currency"]))
             elif r.get("parts_supplied_by_customer"):
-                caveats.append(f"{r['report_id']}: parts were customer-supplied (zero cost) and are excluded from part prices.")
+                caveats.append(f"{r['report_id']}: parts were customer-supplied (zero cost) "
+                               "and are excluded from part prices.")
         if not (r.get("cost_status") == "truncated"):  # truncated tables may be missing lines
             other_parts.append(sum(to_usd(li["line_total"] or 0, r["currency"]) for li in other))
         parts_ids.append(r["report_id"])
@@ -190,7 +194,8 @@ def estimate(equipment_family: str, task_type: str, quantity: int | None = None,
             continue
         if amount is not None:
             actuals.append({"report_id": r["report_id"], "country": r["country"], "quantity": r.get("main_quantity"),
-                            "total_ex_vat": conv(to_usd(amount, r["currency"])), "original": f"{r['currency']} {amount:,.0f}"})
+                            "total_ex_vat": conv(to_usd(amount, r["currency"])),
+                            "original": f"{r['currency']} {amount:,.0f}"})
     no_cost = [r["report_id"] for r in similar if r.get("cost_status") == "not_stated"]
     if no_cost:
         caveats.append(f"{len(no_cost)} similar reports state no cost ({', '.join(no_cost)}); "
@@ -211,7 +216,8 @@ def estimate(equipment_family: str, task_type: str, quantity: int | None = None,
                              "reports": hours_ids} if hours else None,
             "travel_hours": {**{k: round(v, 1) for k, v in travel.items() if k != "n"}, "method": travel_method,
                              "reports": travel_ids} if travel else None,
-            "labour_rate_per_h": {**conv_spread(labour_rate), "basis": rate_basis, "reports": labour_ids} if labour_rate else None,
+            "labour_rate_per_h": ({**conv_spread(labour_rate), "basis": rate_basis, "reports": labour_ids}
+                                  if labour_rate else None),
             "travel_rate_per_h": {**conv_spread(travel_rate), "reports": travel_rate_ids} if travel_rate else None,
             "main_part_unit_price": {**conv_spread(unit), "reports": parts_ids} if unit else None,
             "other_parts_and_consumables": conv_spread(other),

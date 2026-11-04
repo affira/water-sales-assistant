@@ -318,7 +318,7 @@ def build_job(i: int, job: tuple, d: date) -> tuple[str, dict]:
             price = 0.0
         lines.append(dict(description=name, category=cat, quantity=q, unit_price=price,
                           line_total=round(q * price, 2)))
-    subtotal = round(sum(l["line_total"] for l in lines), 2)
+    subtotal = round(sum(line["line_total"] for line in lines), 2)
     vat = quirks.get("vat")
     total = round(subtotal * (1 + vat / 100), 2) if vat else subtotal
 
@@ -328,7 +328,7 @@ def build_job(i: int, job: tuple, d: date) -> tuple[str, dict]:
         stated_travel = onsite
         lines[0]["quantity"] = onsite
         lines[0]["line_total"] = round(onsite * trav_rate, 2)
-        subtotal = round(sum(l["line_total"] for l in lines), 2)
+        subtotal = round(sum(line["line_total"] for line in lines), 2)
         total = subtotal
 
     if style == "formal":
@@ -416,16 +416,16 @@ def write_formal(rid, site, d, date_txt, tech, equipment, task_type, qty_txt, on
         "| Item | Qty | Notes |",
         "|------|-----|-------|",
     ]
-    for l in lines[2:]:
-        note = "Customer stock — no charge" if customer_parts and l["unit_price"] == 0 else ""
-        out.append(f"| {l['description']} | {l['quantity']:g} | {note} |")
+    for line in lines[2:]:
+        note = "Customer stock — no charge" if customer_parts and line["unit_price"] == 0 else ""
+        out.append(f"| {line['description']} | {line['quantity']:g} | {note} |")
     out += ["", "### Findings", f"- {finding}", "- Equipment returned to service and test run completed.", "",
             "### Cost Summary", "", f"| Description | Qty | Rate ({cur}) | Total ({cur}) |",
             "|-------------|-----|------------|-------------|"]
     shown = lines[:3] if truncate else lines
-    for l in shown:
-        out.append(f"| {l['description']} | {l['quantity']:g} | {money(l['unit_price'], cur)} | "
-                   f"{money(l['line_total'], cur)} |")
+    for line in shown:
+        out.append(f"| {line['description']} | {line['quantity']:g} | {money(line['unit_price'], cur)} | "
+                   f"{money(line['line_total'], cur)} |")
     if truncate:
         out.append(f"| {lines[3]['description'] if len(lines) > 3 else 'PPE'} | ")
         return "\n".join(out)

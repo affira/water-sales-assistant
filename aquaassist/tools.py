@@ -10,7 +10,6 @@ import json
 
 from . import config, cost, process, retrieval
 
-
 TOOLS = [
     {
         "name": "list_products",
@@ -30,7 +29,8 @@ TOOLS = [
             "type": "object",
             "properties": {
                 "query": {"type": "string", "description": "Keywords, e.g. 'variable feed water quality permeate'"},
-                "doc_id": {"type": "string", "description": "Optional: restrict to one brochure, e.g. 'aquatune-optimizer'"},
+                "doc_id": {"type": "string",
+                           "description": "Optional: restrict to one brochure, e.g. 'aquatune-optimizer'"},
                 "top_k": {"type": "integer", "description": "Pages to return (default 4)"},
             },
             "required": ["query"],

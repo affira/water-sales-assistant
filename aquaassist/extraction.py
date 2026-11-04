@@ -1,8 +1,8 @@
 """Turn free-text field service reports into structured records (run once, offline).
 
-Division of labour: Claude *reads* each messy report into a strict JSON schema; plain Python
-then *checks* the arithmetic and flags anything suspicious. The cost estimator only ever
-does maths on these records, never on raw text.
+Division of labour: the LLM (whichever provider is selected) *reads* each messy report into a
+strict JSON schema; plain Python then *checks* the arithmetic and flags anything suspicious.
+The cost estimator only ever does maths on these records, never on raw text.
 """
 from __future__ import annotations
 
@@ -10,8 +10,11 @@ import hashlib
 import json
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from typing import Optional
 
-from . import config, llm
+from . import config
+from .countries import harmonize_countries
+from .providers import Provider, get_provider
 
 
 def _nullable(schema: dict) -> dict:
@@ -94,20 +97,10 @@ set date_ambiguous true and assume day-first.
 data-entry oddities, vague times)."""
 
 
-def _extract_one(path: Path) -> dict:
+def _extract_one(provider: Provider, path: Path) -> dict:
     text = path.read_text(encoding="utf-8")
-    response = llm.create(
-        max_tokens=8000,
-        output_config={
-            "effort": config.EXTRACTION_EFFORT,
-            "format": {"type": "json_schema", "schema": RECORD_SCHEMA},
-        },
-        system=EXTRACTION_PROMPT,
-        messages=[{"role": "user", "content": f"<report file=\"{path.name}\">\n{text}\n</report>"}],
-    )
-    if response.stop_reason == "refusal":
-        raise RuntimeError(f"Extraction refused for {path.name}")
-    data = json.loads(next(b.text for b in response.content if b.type == "text"))
+    user = f"<report file=\"{path.name}\">\n{text}\n</report>"
+    data = provider.complete_json(EXTRACTION_PROMPT, user, RECORD_SCHEMA)
     data["source_file"] = path.name
     data["source_sha1"] = hashlib.sha1(text.encode()).hexdigest()
     data["checks"] = validate(data)
@@ -136,8 +129,9 @@ def validate(r: dict) -> list[str]:
     return flags
 
 
-def extract_all(force: bool = False, workers: int = 4) -> list[dict]:
+def extract_all(force: bool = False, workers: int = 4, provider: Optional[Provider] = None) -> list[dict]:
     """Extract every report, reusing cached records whose source text has not changed."""
+    provider = provider if provider is not None else get_provider()
     config.INDEX_DIR.mkdir(exist_ok=True)
     cached = {}
     if config.RECORDS_PATH.exists() and not force:
@@ -147,10 +141,10 @@ def extract_all(force: bool = False, workers: int = 4) -> list[dict]:
             if p.name not in cached
             or cached[p.name]["source_sha1"] != hashlib.sha1(p.read_text(encoding="utf-8").encode()).hexdigest()]
     with ThreadPoolExecutor(max_workers=workers) as pool:
-        for rec in pool.map(_extract_one, todo):
+        for rec in pool.map(lambda path: _extract_one(provider, path), todo):
             cached[rec["source_file"]] = rec
             print(f"  extracted {rec['report_id']}: {rec['equipment_family']} / {rec['task_type']}"
                   + (f"  [{'; '.join(rec['checks'])}]" if rec["checks"] else ""))
-    records = [cached[p.name] for p in paths]
+    records = harmonize_countries([cached[p.name] for p in paths])
     config.RECORDS_PATH.write_text(json.dumps(records, indent=2))
     return records

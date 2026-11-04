@@ -2,5 +2,6 @@
 __pycache__/
 .pytest_cache/
 .env
-index/
+index/*
+!index/service_records.json
 .DS_Store

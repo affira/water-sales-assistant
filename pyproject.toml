@@ -1,0 +1,10 @@
+# Tool configuration only (the project is installed from requirements*.txt, not as a package).
+
+[tool.ruff]
+line-length = 120
+target-version = "py39"
+extend-exclude = ["infra"]
+
+[tool.ruff.lint]
+# pycodestyle errors/warnings, pyflakes, import sorting, bugbear (likely bugs).
+select = ["E", "W", "F", "I", "B"]

@@ -1,0 +1,10 @@
+# Terraform working files and state (state contains generated values such as the
+# Application Insights connection string, so it is never committed).
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+tfplan
+crash.log
+terraform.tfvars
+# The provider lock file IS committed (pins provider versions).
