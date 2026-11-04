@@ -9,6 +9,7 @@ anything that works today.
 ```bash
 source .venv/bin/activate
 pytest -q                           # offline test suite, must pass before every commit
+ruff check .                        # lint; CI (GitHub Actions and Azure DevOps) fails on any finding
 python scripts/generate_data.py     # regenerate synthetic data (deterministic)
 python -m aquaassist.ingest         # extract reports into index/service_records.json (calls the API)
 python -m aquaassist.cli --trace    # interactive agent (calls the API)

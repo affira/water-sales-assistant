@@ -1,0 +1,136 @@
+# Azure DevOps pipeline: Lint -> Test -> Build & push image -> Deploy to Azure Container Apps.
+#
+# No secrets in this file. Build and Deploy authenticate through an Azure Resource Manager service
+# connection; the app reads its API keys from Key Vault at run time with its managed identity.
+#
+# Set these pipeline variables in Azure DevOps (Pipelines > Edit > Variables; values from `terraform output`):
+#   acrName            registry name             (terraform output -raw registry_name)
+#   resourceGroupName  resource group            (terraform output -raw resource_group_name)
+#   containerAppName   container app             (terraform output -raw container_app_name)
+
+trigger:
+  branches:
+    include:
+      - main
+
+pr:
+  branches:
+    include:
+      - main
+
+variables:
+  # Name of your Azure Resource Manager service connection. It is defined here, not in the UI,
+  # because service connections are resolved when the pipeline is compiled. Not a secret.
+  azureServiceConnection: "water-sales-assistant-azure"
+  imageRepository: "water-sales-assistant"
+  pythonVersion: "3.12"
+  isMainPush: ${{ and(eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne(variables['Build.Reason'], 'PullRequest')) }}
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: Lint
+    jobs:
+      - job: ruff
+        displayName: Ruff
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: $(pythonVersion)
+          - script: |
+              pip install "$(grep -E '^ruff==' requirements-dev.txt)"
+              ruff check . --output-format=azure
+            displayName: ruff check
+
+  - stage: Test
+    dependsOn: Lint
+    jobs:
+      - job: pytest
+        displayName: Pytest (mocked LLM only)
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: $(pythonVersion)
+          - script: pip install -r requirements-dev.txt
+            displayName: Install dependencies
+          - script: pytest -q --junitxml=test-results.xml
+            displayName: pytest
+            # No API keys: tests use fake SDK clients and block all network access.
+          - task: PublishTestResults@2
+            condition: succeededOrFailed()
+            inputs:
+              testResultsFiles: test-results.xml
+              testRunTitle: pytest
+
+  - stage: Build
+    displayName: Build & push image
+    dependsOn: Test
+    condition: and(succeeded(), eq(variables.isMainPush, 'True'))
+    jobs:
+      - job: image
+        steps:
+          - script: |
+              missing=""
+              [ -n "${ACRNAME:-}" ] || missing="$missing acrName"
+              [ -n "${RESOURCEGROUPNAME:-}" ] || missing="$missing resourceGroupName"
+              [ -n "${CONTAINERAPPNAME:-}" ] || missing="$missing containerAppName"
+              if [ -n "$missing" ]; then
+                echo "##vso[task.logissue type=error]Set these pipeline variables:$missing"; exit 1
+              fi
+              test -f index/service_records.json || {
+                echo "##vso[task.logissue type=error]index/service_records.json is missing; run ingest and commit it"; exit 1; }
+            displayName: Check pipeline variables and service-record index
+          - task: AzureCLI@2
+            displayName: Build and push image
+            inputs:
+              azureSubscription: ${{ variables.azureServiceConnection }}
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                set -euo pipefail
+                az acr login --name "$(acrName)"
+                server="$(az acr show --name "$(acrName)" --query loginServer -o tsv)"
+                image="$server/$(imageRepository):$(Build.BuildId)"
+                docker build --platform linux/amd64 -t "$image" .
+                docker push "$image"
+                echo "Pushed $image"
+
+  - stage: Deploy
+    displayName: Deploy to Container Apps
+    dependsOn: Build
+    condition: succeeded()
+    jobs:
+      - deployment: containerapp
+        displayName: Update container app
+        # Add approvals or checks to this environment in Azure DevOps if you want a manual gate.
+        environment: water-sales-assistant
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: none
+                - task: AzureCLI@2
+                  displayName: Deploy image and check /health
+                  inputs:
+                    azureSubscription: ${{ variables.azureServiceConnection }}
+                    scriptType: bash
+                    scriptLocation: inlineScript
+                    inlineScript: |
+                      set -euo pipefail
+                      az extension add --name containerapp --upgrade --only-show-errors
+                      server="$(az acr show --name "$(acrName)" --query loginServer -o tsv)"
+                      az containerapp update \
+                        --name "$(containerAppName)" \
+                        --resource-group "$(resourceGroupName)" \
+                        --image "$server/$(imageRepository):$(Build.BuildId)" \
+                        --output none
+                      fqdn="$(az containerapp show --name "$(containerAppName)" \
+                        --resource-group "$(resourceGroupName)" \
+                        --query properties.configuration.ingress.fqdn -o tsv)"
+                      # Allow for a cold start (the app scales to zero).
+                      for attempt in $(seq 1 12); do
+                        if curl -fsS --max-time 20 "https://$fqdn/health"; then echo; echo "Deployed and healthy"; exit 0; fi
+                        echo "Waiting for the new revision ($attempt/12)..."; sleep 10
+                      done
+                      echo "##vso[task.logissue type=error]/health did not respond after deployment"; exit 1

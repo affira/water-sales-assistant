@@ -1,5 +1,7 @@
 # Norvale Sales Assistant
 
+[![CI](https://github.com/affira/water-sales-assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/affira/water-sales-assistant/actions/workflows/ci.yml)
+
 A command-line AI agent that supports a water-treatment equipment salesperson during a customer call. It can:
 
 1. **Answer product questions and recommend a product**, grounded in product brochures.
@@ -83,6 +85,7 @@ Other commands:
 
 ```bash
 pytest -q                              # tools, validation and agent loop tests (no API key needed)
+ruff check .                           # lint (version pinned in requirements-dev.txt)
 python eval/eval_extraction.py         # field-level accuracy of extraction vs. ground truth
 ```
 
@@ -150,6 +153,20 @@ Notes:
 - **`LLM_PROVIDER`:** `-e LLM_PROVIDER=...` overrides the value in `.env`. Leave it out to use whatever `.env` sets (see LLM providers).
 - **`/health`** shows `"llm_credentials": "missing"` (and `/chat` returns 500 `server_misconfigured`) if no key was passed in.
 - **For Azure:** build with `--platform linux/amd64` on Apple-silicon Macs, because Azure Container Apps runs amd64.
+
+## CI/CD
+
+**GitHub Actions** (`.github/workflows/ci.yml`) runs `ruff check` and `pytest` on every push and pull request. No secrets are involved: the tests use fake LLM clients and block network access.
+
+**Azure DevOps** (`azure-pipelines.yml`) runs four stages:
+1. **Lint**
+2. **Test**
+3. **Build & push** the image to Azure Container Registry, tagged with the build ID
+4. **Deploy** it to the container app, followed by a `/health` check
+
+Build and Deploy run only for pushes to `main`. They sign in through an Azure Resource Manager service connection named in the `azureServiceConnection` variable. The pipeline also needs three non-secret pipeline variables: `acrName`, `resourceGroupName` and `containerAppName`.
+
+`index/service_records.json` is committed, so images built in CI include the extracted service records. Re-run ingest and commit the file whenever the reports change.
 
 ## Project layout
 

@@ -71,6 +71,12 @@ curl "$(terraform output -raw app_url)/health"
 
 To deploy a new version later: build and push with a new tag (`:v2`), then run `terraform apply -var container_image=water-sales-assistant:v2`. You can also set `container_image` in `terraform.tfvars`.
 
+**With the Azure DevOps pipeline:** CI deploys images tagged with the build ID (`water-sales-assistant:<BuildId>`). Terraform doesn't know about those deploys. Before running `terraform apply` again, set `container_image` to the tag that is currently deployed, otherwise Terraform will roll the app back to the older image. To see the current image:
+
+```bash
+az containerapp show -n "$(terraform output -raw container_app_name)" -g "$(terraform output -raw resource_group_name)" --query "properties.template.containers[0].image" -o tsv
+```
+
 ## Destroy
 
 ```bash
