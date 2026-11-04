@@ -11,8 +11,7 @@ import json
 from typing import Callable, List, Optional
 
 from . import config, telemetry
-from .providers import (Message, ModelResponse, Provider, ToolCall, ToolResult, ToolResults, UserText,
-                        get_provider)
+from .providers import Message, ModelResponse, Provider, ToolCall, ToolResult, ToolResults, UserText, get_provider
 from .tools import TOOLS, run_tool
 
 SYSTEM_PROMPT = """You are the sales assistant for Norvale Water Technologies, supporting a salesperson \

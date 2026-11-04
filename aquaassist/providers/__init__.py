@@ -14,8 +14,18 @@ from typing import Callable, Dict, List, Optional
 from .. import config
 from .anthropic_api import anthropic_from_env, foundry_claude_from_env
 from .azure_openai import azure_openai_from_env
-from .base import (AssistantTurn, Message, ModelResponse, Provider, ProviderConfigError, ProviderError,
-                   ToolCall, ToolResult, ToolResults, UserText)
+from .base import (
+    AssistantTurn,
+    Message,
+    ModelResponse,
+    Provider,
+    ProviderConfigError,
+    ProviderError,
+    ToolCall,
+    ToolResult,
+    ToolResults,
+    UserText,
+)
 
 DEFAULT_PROVIDER = "anthropic"
 

@@ -63,6 +63,11 @@ def load() -> tuple[pd.DataFrame, dict]:
     return df, notes
 
 
+def _tolerance(metric: str, value: float) -> float:
+    """Matching window for a context reading: relative for feed conductivity, absolute otherwise."""
+    return CONTEXT[metric] * value if metric == "feed_conductivity_uS_cm" else CONTEXT[metric]
+
+
 def _describe(series: pd.Series, value: float, worse: str | None) -> dict:
     s = series.dropna()
     pct = float((s < value).mean() * 100)
@@ -108,10 +113,9 @@ def analyze(readings: dict) -> dict:
     if ctx:
         mask = pd.Series(True, index=df.index)
         for k, v in ctx.items():
-            tol = CONTEXT[k] * v if k == "feed_conductivity_uS_cm" else CONTEXT[k]
-            mask &= (df[k] - v).abs() <= tol
+            mask &= (df[k] - v).abs() <= _tolerance(k, v)
         sub = df[mask]
-        cond = {k: f"{v} ± {CONTEXT[k] * v if k == 'feed_conductivity_uS_cm' else CONTEXT[k]:g}" for k, v in ctx.items()}
+        cond = {k: f"{v} ± {_tolerance(k, v):g}" for k, v in ctx.items()}
         block = {"matching_conditions": cond, "matching_hours": int(len(sub))}
         if len(sub) >= 50:
             block["outcomes"] = {k: {"metric": METRICS[k][0], **_describe(sub[k], readings[k], METRICS[k][2])}

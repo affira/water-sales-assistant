@@ -56,7 +56,8 @@ def _anthropic_usage(response: Any) -> Tuple[Optional[int], Optional[int]]:
     if usage is None:
         return None, None
     # Cached prompt tokens are reported separately from input_tokens; count all of them as input.
-    parts = (getattr(usage, f, None) for f in ("input_tokens", "cache_creation_input_tokens", "cache_read_input_tokens"))
+    fields = ("input_tokens", "cache_creation_input_tokens", "cache_read_input_tokens")
+    parts = (getattr(usage, f, None) for f in fields)
     return sum(p for p in parts if isinstance(p, int)), getattr(usage, "output_tokens", None)
 
 

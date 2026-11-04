@@ -27,7 +27,9 @@ def make_tracer(enabled: bool):
             print(f"{CYAN}  → {data['name']}({json.dumps(data['input'])}){RESET}")
         elif kind == "tool_result":
             preview = data["output"].replace("\n", " ")
-            print(f"{DIM}  ← {'ERROR ' if data['is_error'] else ''}{preview[:300]}{'…' if len(preview) > 300 else ''}{RESET}")
+            status = "ERROR " if data["is_error"] else ""
+            ellipsis = "…" if len(preview) > 300 else ""
+            print(f"{DIM}  ← {status}{preview[:300]}{ellipsis}{RESET}")
     return on_event
 
 

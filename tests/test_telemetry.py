@@ -8,8 +8,7 @@ from typing import Any, Dict, List, Tuple
 
 import azure.monitor.opentelemetry as azure_monitor
 import pytest
-from fakes import (DUMMY_ENV, FAKE_INPUT_TOKENS, FAKE_OUTPUT_TOKENS, PROVIDERS, Fail, Reply,
-                   scripted_provider, tool_step)
+from fakes import DUMMY_ENV, FAKE_INPUT_TOKENS, FAKE_OUTPUT_TOKENS, PROVIDERS, Fail, Reply, scripted_provider, tool_step
 from fastapi.testclient import TestClient
 from opentelemetry.sdk.metrics import MeterProvider
 from opentelemetry.sdk.metrics.export import InMemoryMetricReader

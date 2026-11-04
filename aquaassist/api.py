@@ -103,7 +103,8 @@ def provider_error_details(exc: ProviderError) -> Tuple[int, str, str]:
     if exc.kind == "rate_limit":
         return 429, "rate_limited", "The language model is rate-limited; retry shortly."
     if exc.kind == "auth":
-        return 502, "upstream_auth_failed", "The language model rejected the server's credentials; check its configuration."
+        return (502, "upstream_auth_failed",
+                "The language model rejected the server's credentials; check its configuration.")
     if exc.kind == "upstream":
         status = f" ({exc.status})" if exc.status else ""
         return 502, "upstream_error", f"The language model returned an error{status}."

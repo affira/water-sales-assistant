@@ -49,7 +49,7 @@ def load_chunks(brochure_dir: Path = config.BROCHURE_DIR) -> list[Chunk]:
         pages = re.split(r"^## Page (\d+)\s*$", raw, flags=re.M)
         # pages = [header, "1", text1, "2", text2, ...]
         first_text = pages[2] if len(pages) > 2 else raw
-        product = next((l.strip() for l in first_text.splitlines() if l.strip()), path.stem)
+        product = next((line.strip() for line in first_text.splitlines() if line.strip()), path.stem)
         for num, text in zip(pages[1::2], pages[2::2]):
             if text.strip():
                 chunks.append(Chunk(path.stem, product, edition.group(1) if edition else None, int(num), text.strip()))
@@ -79,7 +79,8 @@ class BM25Index:
             for t in terms:
                 tf = doc.get(t, 0)
                 if tf:
-                    score += self.idf[t] * tf * (self.k1 + 1) / (tf + self.k1 * (1 - self.b + self.b * length / self.avg_len))
+                    norm = self.k1 * (1 - self.b + self.b * length / self.avg_len)
+                    score += self.idf[t] * tf * (self.k1 + 1) / (tf + norm)
             if score > 0:
                 scored.append((score, chunk))
         scored.sort(key=lambda x: -x[0])
@@ -97,7 +98,7 @@ def catalog() -> list[dict]:
     for c in default_index().chunks:
         if c.doc_id in seen:
             continue
-        lines = [l.strip() for l in c.text.splitlines() if l.strip()]
+        lines = [line.strip() for line in c.text.splitlines() if line.strip()]
         seen[c.doc_id] = {
             "doc_id": c.doc_id,
             "product": c.product,
