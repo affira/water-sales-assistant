@@ -8,15 +8,34 @@
 #   resourceGroupName  resource group            (terraform output -raw resource_group_name)
 #   containerAppName   container app             (terraform output -raw container_app_name)
 
+# Documentation-only changes don't rebuild or redeploy the app (a run starts only if at least one
+# changed file is outside this list). Paths are listed explicitly: data/brochures/*.md are app data,
+# so a broad "*.md" exclude would wrongly skip deploys. GitHub Actions still lints and tests every push.
 trigger:
   branches:
     include:
       - main
+  paths:
+    exclude:
+      - README.md
+      - CLAUDE.md
+      - docs/*
+      - infra/README.md
+      - eval/demo_prompts.md
+      - .github/*
 
 pr:
   branches:
     include:
       - main
+  paths:
+    exclude:
+      - README.md
+      - CLAUDE.md
+      - docs/*
+      - infra/README.md
+      - eval/demo_prompts.md
+      - .github/*
 
 variables:
   # Name of your Azure Resource Manager service connection. It is defined here, not in the UI,
