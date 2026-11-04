@@ -10,8 +10,9 @@ from __future__ import annotations
 import json
 from typing import Callable, List, Optional
 
-from . import config
-from .providers import Message, Provider, ToolCall, ToolResult, ToolResults, UserText, get_provider
+from . import config, telemetry
+from .providers import (Message, ModelResponse, Provider, ToolCall, ToolResult, ToolResults, UserText,
+                        get_provider)
 from .tools import TOOLS, run_tool
 
 SYSTEM_PROMPT = """You are the sales assistant for Norvale Water Technologies, supporting a salesperson \
@@ -69,7 +70,7 @@ class Agent:
 
     def _run_turn(self, turn_start: int, emit: Emit) -> str:
         for _ in range(config.MAX_AGENT_STEPS):
-            response = self.provider.complete(SYSTEM_PROMPT, self.messages, TOOLS, self.show_thinking)
+            response = self._complete()
             if response.stop == "refusal":
                 del self.messages[turn_start:]  # drop the whole turn so history stays valid
                 return "Sorry, I can't help with that request."
@@ -89,6 +90,13 @@ class Agent:
             self.messages.append(ToolResults([self._run_tool_call(call, emit) for call in response.tool_calls]))
 
         return "I couldn't finish this within the step limit. Could you narrow the question?"
+
+    def _complete(self) -> ModelResponse:
+        """One LLM call, timed and token-counted for monitoring (no message content is recorded)."""
+        with telemetry.current().llm_call(self.provider.name, self.provider.model) as usage:
+            response = self.provider.complete(SYSTEM_PROMPT, self.messages, TOOLS, self.show_thinking)
+            usage.update(input_tokens=response.input_tokens, output_tokens=response.output_tokens)
+        return response
 
     @staticmethod
     def _run_tool_call(call: ToolCall, emit: Emit) -> ToolResult:

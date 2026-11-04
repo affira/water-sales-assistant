@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import argparse
 
-from . import config
+from . import config, runtime
 from .extraction import extract_all
 
 
@@ -15,6 +15,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--force", action="store_true")
     args = parser.parse_args()
+    runtime.bootstrap()  # API keys from Key Vault or the environment; monitoring if configured
     records = extract_all(force=args.force)
     flagged = [r for r in records if r["checks"]]
     print(f"\n{len(records)} records in {config.RECORDS_PATH.relative_to(config.ROOT)}; "

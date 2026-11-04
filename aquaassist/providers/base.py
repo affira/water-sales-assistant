@@ -53,6 +53,8 @@ class ModelResponse:
     assistant: AssistantTurn
     stop: StopReason
     thinking: List[str] = field(default_factory=list)
+    input_tokens: Optional[int] = None   # for monitoring; None when the SDK reports no usage
+    output_tokens: Optional[int] = None
 
     @property
     def text(self) -> str:

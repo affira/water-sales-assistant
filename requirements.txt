@@ -5,3 +5,6 @@ numpy>=1.26
 pandas>=2.0
 fastapi>=0.115
 uvicorn>=0.30
+azure-identity>=1.19
+azure-keyvault-secrets>=4.9
+azure-monitor-opentelemetry>=1.6

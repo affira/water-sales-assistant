@@ -37,7 +37,8 @@ def test_health_reports_provider_and_index(kind: str, monkeypatch: pytest.Monkey
     client, _ = api_with(kind)
     assert client.get("/health").json() == {
         "status": "ok", "service_records_index": "missing", "llm_provider": kind,
-        "llm_credentials": "configured", "model": providers.model_name(kind)}
+        "llm_credentials": "configured", "model": providers.model_name(kind),
+        "telemetry": "disabled", "key_vault": "disabled"}
 
 
 def test_missing_settings_are_reported_by_name_only(kind: str, monkeypatch: pytest.MonkeyPatch) -> None:

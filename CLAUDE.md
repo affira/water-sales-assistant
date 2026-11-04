@@ -27,6 +27,9 @@ python eval/eval_extraction.py      # extraction accuracy vs. eval/ground_truth_
 - `aquaassist/providers/`: the only place LLM SDK clients are created and called. `LLM_PROVIDER`
   selects `anthropic` (default), `azure_openai` or `foundry_claude`; `base.py` defines the internal
   message/tool-call format and `convert.py` is the single place that translates it to each SDK
+- `aquaassist/runtime.py`: start-up (`bootstrap()`): `secret_store.py` loads API keys from Key Vault
+  when `KEY_VAULT_URL` is set, then `telemetry.py` enables Azure Monitor when
+  `APPLICATIONINSIGHTS_CONNECTION_STRING` is set
 - `aquaassist/config.py`: environment variables, paths, FX rates, enums
 - `aquaassist/cost.py`, `process.py`, `retrieval.py`: deterministic engines behind the tools
 - `aquaassist/extraction.py`: LLM report extraction and the rule-based `validate()`
@@ -57,6 +60,10 @@ python eval/eval_extraction.py      # extraction accuracy vs. eval/ground_truth_
 - Configuration comes from environment variables. When you add or rename a variable, update
   `.env.example` in the same change (placeholder values only) and document it in the README.
 - `.env` stays gitignored.
+- API keys may come from Key Vault (`secret_store.py`); log variable names and sources only.
+- Telemetry records names, counts, durations, token counts and error codes only: never message or
+  reply text, tool inputs, session ids or exception messages. Keep `test_telemetry.py`'s privacy
+  test passing when adding new attributes.
 
 ### Data
 - All company, product, customer and report data is synthetic (Norvale Water Technologies is

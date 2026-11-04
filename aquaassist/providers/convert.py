@@ -7,7 +7,7 @@ OpenAI:    tool calls are `message.tool_calls` with JSON-string arguments; each 
 from __future__ import annotations
 
 import json
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional, Tuple
 
 from .base import AssistantTurn, Message, ModelResponse, StopReason, ToolCall, ToolResults, UserText
 
@@ -51,13 +51,22 @@ def to_anthropic_messages(messages: List[Message]) -> List[dict]:
     return out
 
 
+def _anthropic_usage(response: Any) -> Tuple[Optional[int], Optional[int]]:
+    usage = getattr(response, "usage", None)
+    if usage is None:
+        return None, None
+    # Cached prompt tokens are reported separately from input_tokens; count all of them as input.
+    parts = (getattr(usage, f, None) for f in ("input_tokens", "cache_creation_input_tokens", "cache_read_input_tokens"))
+    return sum(p for p in parts if isinstance(p, int)), getattr(usage, "output_tokens", None)
+
+
 def from_anthropic_response(response: Any) -> ModelResponse:
     content = anthropic_replayable(response.content)
     text = "\n".join(b.text for b in content if b.type == "text").strip()
     calls = [ToolCall(b.id, b.name, dict(b.input)) for b in content if b.type == "tool_use"]
     thinking = [b.thinking for b in content if b.type == "thinking" and getattr(b, "thinking", "")]
     stop = _ANTHROPIC_STOP.get(response.stop_reason, "end")
-    return ModelResponse(AssistantTurn(text, calls, opaque=content), stop, thinking)
+    return ModelResponse(AssistantTurn(text, calls, opaque=content), stop, thinking, *_anthropic_usage(response))
 
 
 # --- OpenAI (Chat Completions) ---------------------------------------------------------
@@ -102,11 +111,19 @@ def _parse_arguments(raw: str) -> Dict[str, Any]:
     return args if isinstance(args, dict) else {"_unparseable_arguments": raw}
 
 
+def _openai_usage(response: Any) -> Tuple[Optional[int], Optional[int]]:
+    usage = getattr(response, "usage", None)
+    if usage is None:
+        return None, None
+    return getattr(usage, "prompt_tokens", None), getattr(usage, "completion_tokens", None)
+
+
 def from_openai_response(response: Any) -> ModelResponse:
     choice = response.choices[0]
     message = choice.message
+    tokens = _openai_usage(response)
     if getattr(message, "refusal", None) or choice.finish_reason == "content_filter":
-        return ModelResponse(AssistantTurn(""), "refusal")
+        return ModelResponse(AssistantTurn(""), "refusal", [], *tokens)
     calls = [ToolCall(c.id, c.function.name, _parse_arguments(c.function.arguments))
              for c in (message.tool_calls or [])]
     if calls:
@@ -115,4 +132,4 @@ def from_openai_response(response: Any) -> ModelResponse:
         stop = "max_tokens"
     else:
         stop = "end"
-    return ModelResponse(AssistantTurn((message.content or "").strip(), calls), stop)
+    return ModelResponse(AssistantTurn((message.content or "").strip(), calls), stop, [], *tokens)

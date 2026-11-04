@@ -1,4 +1,5 @@
 import json
+import os
 import socket
 import sys
 from pathlib import Path
@@ -7,6 +8,11 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+
+# Importing aquaassist.api runs start-up; real Key Vault / monitoring settings from the shell
+# must never reach tests (tests that need them set them explicitly with monkeypatch).
+for _var in ("KEY_VAULT_URL", "APPLICATIONINSIGHTS_CONNECTION_STRING"):
+    os.environ.pop(_var, None)
 
 from aquaassist.extraction import validate  # noqa: E402
 

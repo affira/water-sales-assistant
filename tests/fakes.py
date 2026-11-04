@@ -20,6 +20,9 @@ from aquaassist.providers.azure_openai import AzureOpenAIProvider
 
 PROVIDERS = ["anthropic", "azure_openai", "foundry_claude"]
 
+# Every fake response reports 150 input and 20 output tokens (Anthropic: 100 + 50 cached).
+FAKE_INPUT_TOKENS, FAKE_OUTPUT_TOKENS = 150, 20
+
 # Environment that makes each provider count as configured (dummy values, never real keys).
 DUMMY_ENV = {
     "anthropic": {"ANTHROPIC_API_KEY": "test-placeholder"},
@@ -79,7 +82,8 @@ def _anthropic_response(step: Any) -> NS:
         content.append(NS(type="text", text=step.text))
     content += [NS(type="tool_use", id=c.id, name=c.name, input=c.args) for c in step.calls]
     stop = "tool_use" if step.calls else ("max_tokens" if step.truncated else "end_turn")
-    return NS(stop_reason=stop, content=content)
+    usage = NS(input_tokens=100, cache_creation_input_tokens=0, cache_read_input_tokens=50, output_tokens=20)
+    return NS(stop_reason=stop, content=content, usage=usage)
 
 
 def _openai_response(step: Any) -> NS:
@@ -90,7 +94,8 @@ def _openai_response(step: Any) -> NS:
              for c in step.calls] or None
     finish = "tool_calls" if step.calls else ("length" if step.truncated else "stop")
     return NS(choices=[NS(finish_reason=finish, message=NS(content=step.text or None, tool_calls=calls,
-                                                           refusal=None))])
+                                                           refusal=None))],
+              usage=NS(prompt_tokens=150, completion_tokens=20))
 
 
 class _Scripted:

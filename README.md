@@ -107,6 +107,28 @@ How it fits together:
 - **Ingest** works on every provider through structured JSON output.
 - **Server-side refusal fallback** is used on the Anthropic API only, because Foundry doesn't support it.
 
+### Production: monitoring and secrets
+
+Both are off by default and switched on by environment variables. Start-up (`aquaassist/runtime.py`) runs before the API, CLI or ingest: it loads secrets first, then monitoring.
+
+**Monitoring:** set `APPLICATIONINSIGHTS_CONNECTION_STRING` to export to Azure Monitor (Application Insights) via `azure-monitor-opentelemetry`. Implemented in `aquaassist/telemetry.py`.
+
+| Recorded | Never recorded |
+|---|---|
+| Request latency and outcome (FastAPI request spans, plus `aquaassist.chat.duration`) | Message or reply text |
+| Tool **names** per request (`aquaassist.tools`) and tool-call counts | Tool inputs (they can echo user text) |
+| LLM latency (`aquaassist.llm.duration`) and input/output token counts (`aquaassist.llm.tokens`, `gen_ai.usage.*`) | Session IDs |
+| Error codes (`aquaassist.chat.errors`, span status) | Exception messages and stack traces |
+| | Keys and the connection string |
+
+**Secrets:** set `KEY_VAULT_URL` to read `ANTHROPIC_API_KEY`, `AZURE_OPENAI_API_KEY` and `ANTHROPIC_FOUNDRY_API_KEY` from Azure Key Vault. Implemented in `aquaassist/secret_store.py`.
+- **Secret names:** `anthropic-api-key`, `azure-openai-api-key`, `anthropic-foundry-api-key` (Key Vault names can't contain `_`).
+- **Authentication:** `DefaultAzureCredential`. On Azure that's the app's managed identity, which needs the *Key Vault Secrets User* role. Locally it's your `az login`.
+- **Fallback:** a secret missing from the vault, or a vault that can't be reached, falls back to the environment variable.
+- **Logging:** only variable names and their source are logged, never values.
+
+`/health` reports `"telemetry"` and `"key_vault"` as `enabled` or `disabled`.
+
 ### Docker
 
 The image runs the API with uvicorn on port 8000 as a non-root user. It includes the code and the synthetic data. It contains no secrets: the API key and all settings come from environment variables at run time.

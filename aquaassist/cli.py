@@ -10,7 +10,7 @@ import argparse
 import json
 import sys
 
-from . import config
+from . import config, runtime
 from .agent import Agent
 from .providers import ProviderConfigError, ProviderError
 
@@ -36,6 +36,7 @@ def main() -> None:
     parser.add_argument("--trace", action="store_true", help="show tool calls and reasoning summaries")
     parser.add_argument("--once", metavar="MESSAGE", help="answer a single message and exit")
     args = parser.parse_args()
+    runtime.bootstrap()  # API keys from Key Vault or the environment; monitoring if configured
 
     if not config.RECORDS_PATH.exists():
         sys.exit("Service records not built yet. Run: python -m aquaassist.ingest")

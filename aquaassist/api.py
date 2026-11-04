@@ -9,14 +9,14 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Literal, Optional, Union
+from typing import Any, Callable, Dict, List, Literal, Optional, Tuple, Union
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 
-from . import config, providers
+from . import config, providers, runtime, secret_store, telemetry
 from .agent import Agent
 from .citations import extract_sources
 from .providers import ProviderError
@@ -61,6 +61,8 @@ class HealthResponse(BaseModel):
     llm_provider: str
     llm_credentials: Literal["configured", "missing"]
     model: str
+    telemetry: Literal["enabled", "disabled"]
+    key_vault: Literal["enabled", "disabled"]
 
 
 class ErrorResponse(BaseModel):
@@ -96,17 +98,38 @@ def error_response(status: int, error: str, message: str, details: Optional[list
     return JSONResponse(status_code=status, content=body.model_dump())
 
 
-def upstream_error_response(exc: ProviderError) -> JSONResponse:
-    """Map provider errors (any backend) to HTTP errors without exposing upstream messages or credentials."""
+def provider_error_details(exc: ProviderError) -> Tuple[int, str, str]:
+    """(HTTP status, error code, message) for a provider error, without upstream text or credentials."""
     if exc.kind == "rate_limit":
-        return error_response(429, "rate_limited", "The language model is rate-limited; retry shortly.")
+        return 429, "rate_limited", "The language model is rate-limited; retry shortly."
     if exc.kind == "auth":
-        return error_response(502, "upstream_auth_failed",
-                              "The language model rejected the server's credentials; check its configuration.")
+        return 502, "upstream_auth_failed", "The language model rejected the server's credentials; check its configuration."
     if exc.kind == "upstream":
         status = f" ({exc.status})" if exc.status else ""
-        return error_response(502, "upstream_error", f"The language model returned an error{status}.")
-    return error_response(503, "llm_unavailable", "The language model could not be reached; retry shortly.")
+        return 502, "upstream_error", f"The language model returned an error{status}."
+    return 503, "llm_unavailable", "The language model could not be reached; retry shortly."
+
+
+def answer_chat(request: ChatRequest, store: SessionStore, turn: Dict[str, Any]) -> Union[ChatResponse, JSONResponse]:
+    """Handle one /chat request, filling `turn` (status, error code, tools) for monitoring."""
+    problems = providers.configuration_problems()
+    if problems:  # names of missing variables only, never values
+        turn.update(status=500, error="server_misconfigured")
+        return error_response(500, "server_misconfigured", "The server's LLM provider is not configured.",
+                              [{"field": "environment", "message": p} for p in problems])
+    recorder = TurnRecorder()
+    try:
+        with store.session(request.session_id) as agent:
+            reply = agent.ask(request.message, recorder)
+    except ProviderError as exc:
+        logger.warning("LLM call failed: %s", exc)  # kind and status only: no upstream text or secrets
+        status, code, message = provider_error_details(exc)
+        turn.update(status=status, error=code)
+        return error_response(status, code, message)
+    finally:
+        turn["tools"] = [(t.name, t.is_error) for t in recorder.tools]  # names only, never inputs
+    sources = [SourceOut(**vars(s)) for s in extract_sources(reply, recorder.outputs)]
+    return ChatResponse(session_id=request.session_id, reply=reply, sources=sources, tools_used=recorder.tools)
 
 
 def _validation_details(exc: RequestValidationError) -> list:
@@ -139,6 +162,8 @@ def create_app(agent_factory: Callable[[], Agent] = Agent, max_sessions: int = 1
             llm_provider=providers.selected_provider(),
             llm_credentials="missing" if providers.configuration_problems() else "configured",
             model=providers.model_name(),
+            telemetry="enabled" if telemetry.enabled() else "disabled",
+            key_vault="enabled" if secret_store.key_vault_enabled() else "disabled",
         )
 
     @app.post("/chat", response_model=ChatResponse,
@@ -146,22 +171,17 @@ def create_app(agent_factory: Callable[[], Agent] = Agent, max_sessions: int = 1
                          500: {"model": ErrorResponse}, 502: {"model": ErrorResponse},
                          503: {"model": ErrorResponse}})
     def chat(request: ChatRequest) -> Union[ChatResponse, JSONResponse]:
-        problems = providers.configuration_problems()
-        if problems:  # names of missing variables only, never values
-            return error_response(500, "server_misconfigured", "The server's LLM provider is not configured.",
-                                  [{"field": "environment", "message": p} for p in problems])
-        recorder = TurnRecorder()
-        try:
-            with store.session(request.session_id) as agent:
-                reply = agent.ask(request.message, recorder)
-        except ProviderError as exc:
-            logger.warning("LLM call failed: %s", exc)  # kind and status only: no upstream text or secrets
-            return upstream_error_response(exc)
-        sources = [SourceOut(**vars(s)) for s in extract_sources(reply, recorder.outputs)]
-        return ChatResponse(session_id=request.session_id, reply=reply, sources=sources,
-                            tools_used=recorder.tools)
+        with telemetry.current().chat_turn(providers.selected_provider()) as turn:
+            return answer_chat(request, store, turn)
 
     return app
 
 
-app = create_app()
+def build_app() -> FastAPI:
+    """The production app. Secrets and monitoring are set up first: the FastAPI auto-instrumentation
+    must be in place before the app object is created."""
+    runtime.bootstrap()
+    return create_app()
+
+
+app = build_app()
