@@ -65,16 +65,18 @@ class Telemetry:
     def _finish_chat(self, span: Any, provider: str, record: Dict[str, Any], ms: float) -> None:
         tools: List[Tuple[str, bool]] = record["tools"]
         error: Optional[str] = record["error"]
-        span.set_attribute("aquaassist.tools", [name for name, _ in tools])
+        # A plain comma-separated string: Azure Monitor stores list attributes as Python tuple text.
+        span.set_attribute("aquaassist.tools", ",".join(name for name, _ in tools))
         span.set_attribute("aquaassist.tool_count", len(tools))
-        span.set_attribute("http.response.status_code", record["status"])
+        # Not "http.*": Azure Monitor reserves those names and drops them on internal spans.
+        span.set_attribute("aquaassist.status_code", record["status"])
         if error:
             span.set_attribute("aquaassist.error", error)
             span.set_status(Status(StatusCode.ERROR, error))
             self.chat_errors.add(1, {"llm.provider": provider, "error": error})
         outcome = error or "ok"
         self.chat_duration.record(ms, {"llm.provider": provider, "outcome": outcome,
-                                       "http.response.status_code": record["status"]})
+                                       "aquaassist.status_code": record["status"]})
         for name, is_error in tools:
             self.tool_calls.add(1, {"tool": name, "is_error": is_error})
 
@@ -131,7 +133,12 @@ def setup_telemetry() -> bool:
 
     # Also auto-instruments FastAPI (request spans with method, route, status and duration;
     # no bodies or headers). Must run before the FastAPI app is created.
-    configure_azure_monitor(connection_string=connection_string, logger_name=EXPORTED_LOGGER)
+    options: Dict[str, Any] = {"connection_string": connection_string, "logger_name": EXPORTED_LOGGER}
+    if not os.environ.get("OTEL_TRACES_SAMPLER"):
+        # Keep every trace. The distro's default rate-limited sampler is adaptive and starts again on
+        # each scale-from-zero cold start, so at this app's low traffic it dropped most traces.
+        options["sampling_ratio"] = 1.0
+    configure_azure_monitor(**options)
     logging.getLogger(EXPORTED_LOGGER).setLevel(logging.INFO)
     _current, _enabled = None, True  # rebuild instruments against the configured providers
     logger.info("Azure Monitor telemetry enabled")

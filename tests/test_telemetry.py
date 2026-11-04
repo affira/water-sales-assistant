@@ -83,9 +83,9 @@ def test_chat_records_latency_tools_and_tokens(otel, kind: str) -> None:
 
     spans = spans_by_name(exporter)
     [turn] = spans["chat.turn"]
-    assert turn.attributes["aquaassist.tools"] == ("search_product_docs",)
+    assert turn.attributes["aquaassist.tools"] == "search_product_docs"
     assert turn.attributes["aquaassist.tool_count"] == 1
-    assert turn.attributes["http.response.status_code"] == 200
+    assert turn.attributes["aquaassist.status_code"] == 200
     assert len(spans["llm.complete"]) == 2
     for llm in spans["llm.complete"]:
         assert llm.attributes["gen_ai.system"] == kind
@@ -176,9 +176,17 @@ def test_monitoring_turns_on_with_connection_string(fake_configure: List[dict], 
     with caplog.at_level(logging.DEBUG):
         assert telemetry.setup_telemetry() is True
         assert telemetry.setup_telemetry() is True  # idempotent
-    assert fake_configure == [{"connection_string": secret, "logger_name": "aquaassist"}]
+    assert fake_configure == [{"connection_string": secret, "logger_name": "aquaassist", "sampling_ratio": 1.0}]
     assert telemetry.enabled()
     assert "InstrumentationKey" not in caplog.text
+
+
+def test_standard_sampler_variable_overrides_full_sampling(fake_configure: List[dict],
+                                                         monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv(telemetry.CONNECTION_STRING_VAR, "InstrumentationKey=00000000-0000-0000-0000-000000000000")
+    monkeypatch.setenv("OTEL_TRACES_SAMPLER", "microsoft.rate_limited")
+    telemetry.setup_telemetry()
+    assert "sampling_ratio" not in fake_configure[0]
 
 
 def test_health_reports_monitoring(monkeypatch: pytest.MonkeyPatch) -> None:

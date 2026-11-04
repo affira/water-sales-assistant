@@ -100,6 +100,24 @@ Why this matters:
 - **Never recorded:** message or reply text, tool inputs, session IDs or exception messages.
 - **Tested:** a privacy test sends a message containing a name and phone number and checks that none of it reaches any exported span or metric.
 
+**Per-request view in Application Insights** (Logs, or `az monitor app-insights query`). Each `/chat` call with its tools, outcome, LLM calls and tokens:
+
+```kusto
+dependencies
+| where name == "chat.turn"
+| join kind=leftouter (
+    dependencies | where name == "llm.complete"
+    | summarize llm_calls = count(),
+                input_tokens = sum(toint(customDimensions["gen_ai.usage.input_tokens"])),
+                output_tokens = sum(toint(customDimensions["gen_ai.usage.output_tokens"])) by operation_Id
+  ) on operation_Id
+| project timestamp, tools = tostring(customDimensions["aquaassist.tools"]),
+          status = tostring(customDimensions["aquaassist.status_code"]),
+          seconds = round(duration / 1000, 1), llm_calls, input_tokens, output_tokens
+```
+
+**Sampling:** all traces are kept by default. The library's own default is an adaptive, rate-limited sampler, which restarts on every scale-from-zero cold start and dropped most traces at this traffic level. For high traffic, set `OTEL_TRACES_SAMPLER`.
+
 ### Smaller decisions
 - **Retrieval:** BM25 keyword search instead of embeddings. It's accurate for 11 short brochures, free and explainable. It sits behind one `search()` interface, so it can be swapped for hybrid vector search at scale.
 - **Hand-written agent loop** instead of a framework. Every step is visible and testable.
@@ -117,7 +135,7 @@ Why this matters:
 | Main quantity | 48/50 |
 | Task type (2 of 3 misses aren't knowable from "standard maintenance" notes) | 47/50 |
 
-**Tests:** 135 offline tests, run on every push. LLM calls use fake SDK clients, and all network access is blocked during tests.
+**Tests:** 136 offline tests, run on every push. LLM calls use fake SDK clients, and all network access is blocked during tests.
 
 ![Passing GitHub Actions run: Lint (ruff) and Test (pytest, mocked LLM)](docs/screenshots/github-actions.png)
 
@@ -171,7 +189,7 @@ The image (`python:3.12-slim`) runs as a non-root user and contains no secrets; 
 
 ### Tests, lint and evaluation
 ```bash
-pytest -q                          # 135 offline tests (no API key, no network)
+pytest -q                          # 136 offline tests (no API key, no network)
 ruff check .                       # lint, version pinned in requirements-dev.txt
 python eval/eval_extraction.py     # extraction accuracy vs. ground truth
 ```
@@ -197,6 +215,7 @@ All of these are listed with placeholder values in [`.env.example`](.env.example
 | `FOUNDRY_CLAUDE_DEPLOYMENT` | `foundry_claude` | `claude-opus-5-5` | Claude deployment name in Foundry |
 | `KEY_VAULT_URL` | optional | empty = off | Read the API keys above from this Key Vault |
 | `APPLICATIONINSIGHTS_CONNECTION_STRING` | optional | empty = off | Export monitoring to Application Insights |
+| `OTEL_TRACES_SAMPLER` | optional | empty = 100% | Standard OpenTelemetry sampler; set e.g. `microsoft.rate_limited` for high traffic |
 | `AZURE_CLIENT_ID` | on Azure | set by Terraform | Which managed identity `DefaultAzureCredential` uses |
 
 ## Deploy to Azure
@@ -318,7 +337,7 @@ data/                synthetic brochures, service reports, hourly plant CSV
 index/               extracted service records (committed)
 scripts/             synthetic data generator
 eval/                ground truth, extraction eval, demo prompts
-tests/               135 offline tests (fake LLM clients, no network)
+tests/               136 offline tests (fake LLM clients, no network)
 infra/               Terraform for Azure; see infra/README.md
 docs/screenshots/    screenshots for this README
 ```
