@@ -10,7 +10,9 @@ An AI sales assistant for a water-treatment equipment company, built in Python. 
 > truncated tables, VAT, weekend rates, ambiguous dates, a copy-paste error, and two brochure editions that
 > contradict each other. It is not affiliated with any real company.
 
-> 📸 **Screenshot placeholder:** `docs/screenshots/cli-trace.png` (the CLI with `--trace` answering the Chile cost question, showing tool calls)
+![CLI with --trace: the agent calls estimate_service_cost and answers with a cited range](docs/screenshots/cli-trace.png)
+
+*The CLI with `--trace` on Azure OpenAI (`gpt-5-mini`). The agent calls one tool, and every figure comes from the deterministic estimator with report IDs.*
 
 ## What it does
 
@@ -115,9 +117,9 @@ Why this matters:
 | Main quantity | 48/50 |
 | Task type (2 of 3 misses aren't knowable from "standard maintenance" notes) | 47/50 |
 
-**Tests:** 133 offline tests, run on every push. LLM calls use fake SDK clients, and all network access is blocked during tests.
+**Tests:** 135 offline tests, run on every push. LLM calls use fake SDK clients, and all network access is blocked during tests.
 
-> 📸 **Screenshot placeholder:** `docs/screenshots/github-actions.png` (passing GitHub Actions run)
+![Passing GitHub Actions run: Lint (ruff) and Test (pytest, mocked LLM)](docs/screenshots/github-actions.png)
 
 ## Run it locally
 
@@ -155,7 +157,9 @@ curl -X POST http://localhost:8000/chat -H "Content-Type: application/json" \
 - **Sessions:** reuse the same `session_id` to continue a conversation, e.g. answer the clarifying question: `"Antofagasta, about 9 hours round trip."`
 - **Errors:** invalid input returns 422 with field-level details. LLM failures return 429, 502 or 503 without echoing upstream error text.
 
-> 📸 **Screenshot placeholder:** `docs/screenshots/api-docs.png` (Swagger UI at `/docs` with a `/chat` response showing verified sources)
+![Swagger UI: POST /chat returns the reply and cited brochure pages marked verified](docs/screenshots/api-docs.png)
+
+*`POST /chat` in the interactive docs (local run). Each cited brochure page is checked against what the tools actually returned.*
 
 ### Docker
 ```bash
@@ -167,7 +171,7 @@ The image (`python:3.12-slim`) runs as a non-root user and contains no secrets; 
 
 ### Tests, lint and evaluation
 ```bash
-pytest -q                          # 133 offline tests (no API key, no network)
+pytest -q                          # 135 offline tests (no API key, no network)
 ruff check .                       # lint, version pinned in requirements-dev.txt
 python eval/eval_extraction.py     # extraction accuracy vs. ground truth
 ```
@@ -314,7 +318,7 @@ data/                synthetic brochures, service reports, hourly plant CSV
 index/               extracted service records (committed)
 scripts/             synthetic data generator
 eval/                ground truth, extraction eval, demo prompts
-tests/               133 offline tests (fake LLM clients, no network)
+tests/               135 offline tests (fake LLM clients, no network)
 infra/               Terraform for Azure; see infra/README.md
 docs/screenshots/    screenshots for this README
 ```
