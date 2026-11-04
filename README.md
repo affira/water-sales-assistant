@@ -280,7 +280,9 @@ curl "$(terraform output -raw app_url)/health"
   - **Setup:** an Azure Resource Manager service connection, named in the `azureServiceConnection` variable. It uses **workload identity federation with a managed identity** (`norvale-pipeline-identity`, created by Terraform, with Contributor on the resource group only), so there's no secret and no Entra app registration is needed. The pipeline also needs the variables `acrName`, `resourceGroupName` and `containerAppName` from `terraform output`.
   - **After a pipeline deploy,** set Terraform's `container_image` to the deployed tag before the next `terraform apply`. See [`infra/README.md`](infra/README.md).
 
-> 📸 **Screenshot placeholder:** `docs/screenshots/azure-devops-pipeline.png` (pipeline run with the four stages)
+![Azure DevOps run on main: Lint, Test (100% passed), Build & push and Deploy all green](docs/screenshots/azure-devops-pipeline.png)
+
+*The merge of the pull request into `main` triggered the full Azure DevOps pipeline. The image tagged with the build ID was pushed to the registry and deployed to the container app, followed by a `/health` check.*
 
 ## Cost
 

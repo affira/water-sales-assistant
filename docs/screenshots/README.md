@@ -9,6 +9,6 @@
 | `github-actions.png` ✅ | A passing GitHub Actions run (Lint and Test jobs) |
 | `azure-container-app.png` ✅ | The Container App overview in the Azure portal (application URL, revision, scale to zero) |
 | `app-insights.png` ✅ (+ `app-insights-chart.png`) | Application Insights: request latency, plus the `aquaassist.llm.tokens` metric |
-| `azure-devops-pipeline.png` | An Azure DevOps run showing the Lint, Test, Build and Deploy stages |
+| `azure-devops-pipeline.png` ✅ | An Azure DevOps run showing the Lint, Test, Build and Deploy stages |
 
 Before saving, check that no screenshot shows keys, connection strings or the contents of your `.env`.
